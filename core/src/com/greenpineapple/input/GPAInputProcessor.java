@@ -1,18 +1,38 @@
 package com.greenpineapple.input;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public class GPAInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		switch (keycode){
+		case Keys.W:
+			break;
+		case Keys.A:
+			break;
+		case Keys.S:
+			break;
+		case Keys.D:
+			break;
+		}
+			
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+		switch (keycode){
+		case Keys.W:
+			break;
+		case Keys.A:
+			break;
+		case Keys.S:
+			break;
+		case Keys.D:
+			break;
+		}
 		return false;
 	}
 
