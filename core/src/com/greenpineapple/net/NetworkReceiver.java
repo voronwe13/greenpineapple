@@ -84,6 +84,7 @@ public class NetworkReceiver {
 				}
 			}
 		}));
+		serverObjects.getThread().start();
 
 		return serverObjects;
 	}
