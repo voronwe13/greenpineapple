@@ -9,6 +9,6 @@ import com.greenpineapple.player.GPAPlayer;
 
 public class GPAGameState implements Serializable {
 	
-	public List<GPAPlayer> guards, players;
-	
+	public List<GPAPlayer> guards, robbers;
+	public int guardscore, robberscore;
 }

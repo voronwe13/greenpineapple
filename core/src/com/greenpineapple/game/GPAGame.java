@@ -31,8 +31,8 @@ public class GPAGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		guardplayer = new GPAPlayer();
 		robberplayer = new GPAPlayer();
-		guardplayer.setTexture("mandalorian.png");
-		robberplayer.setTexture("hansolo.png");
+		guardplayer.setTexture("BlueSpriteSheet.png");
+		robberplayer.setTexture("RedSpriteSheet.png");
 		guardplayer.setPosition(10,10);
 		robberplayer.setPosition(300,300);
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();

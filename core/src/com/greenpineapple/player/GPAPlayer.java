@@ -10,7 +10,7 @@ import com.greenpineapple.game.GPAGame;
 
 public class GPAPlayer implements Serializable {
 
-    private static final int FRAME_COLS = 4;
+    private static final int FRAME_COLS = 8;
     private static final int FRAME_ROWS = 4;
 	
 	private int speedx = 5, speedy = 5;
@@ -105,10 +105,10 @@ public class GPAPlayer implements Serializable {
                 spriteframes[i][j] = tmp[i][j];
             }
         }
-        animationdown = new Animation(0.025f, spriteframes[0]);
-        animationleft = new Animation(0.025f, spriteframes[1]);
-        animationright = new Animation(0.025f, spriteframes[2]);
-        animationup = new Animation(0.025f, spriteframes[3]);
+        animationup = new Animation(0.025f, spriteframes[0]);
+        animationright = new Animation(0.025f, spriteframes[1]);
+        animationdown = new Animation(0.025f, spriteframes[2]);
+        animationleft = new Animation(0.025f, spriteframes[3]);
         currentanimation = animationright;
 
 	}
@@ -118,7 +118,7 @@ public class GPAPlayer implements Serializable {
 	}
 	
 	public TextureRegion getCurrentFrame(float statetime){
-		if(movingx + movingy == 0){
+		if(movingx == 0 && movingy == 0){
 			statetime = 0;
 		}
 		
