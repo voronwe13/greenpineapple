@@ -1,10 +1,10 @@
 package com.greenpineapple.input;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.greenpineapple.player.GPAPlayer;
 
-public class GPAInputProcessor implements InputProcessor {
+public class GPAInputProcessor extends InputAdapter {
 
 	private GPAPlayer player;
 
@@ -44,42 +44,6 @@ public class GPAInputProcessor implements InputProcessor {
 			player.moveLeft();
 			break;
 		}
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
