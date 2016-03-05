@@ -147,7 +147,7 @@ public class ChatModule extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		receiveNetowrkMessages();
+		receiveNetworkMessages();
 		
 		displayMessages();
 		
@@ -189,7 +189,7 @@ public class ChatModule extends ApplicationAdapter {
 		});
 	}
 	
-	private void receiveNetowrkMessages() {
+	private void receiveNetworkMessages() {
 		List<NetworkObject> networkObjects = NetworkReceiver.retrieveUpdates();
 		
 		for (NetworkObject networkObject : networkObjects) {

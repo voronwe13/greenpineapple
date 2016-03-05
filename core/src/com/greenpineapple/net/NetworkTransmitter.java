@@ -14,17 +14,19 @@ import com.badlogic.gdx.net.SocketHints;
 public class NetworkTransmitter {
 	private static final Object CLIENT_SOCKET_LOCK = new Object();
 	private static Queue<Socket> clientSockets = new ConcurrentLinkedQueue<>();
-	
+
 	private static Queue<NetworkObject> networkObjects = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Adds a client to the list of clients to transmit to.
-	 * @param address cannot be null
+	 * 
+	 * @param address
+	 *            cannot be null
 	 * @param port
 	 */
 	public static void addClient(String address) {
 		Objects.requireNonNull(address);
-		
+
 		SocketHints socketHints = new SocketHints();
 		socketHints.connectTimeout = NetworkConstants.CONNECTION_TIMEOUT;
 		Socket clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, NetworkConstants.PORT, socketHints);
@@ -36,11 +38,13 @@ public class NetworkTransmitter {
 
 	/**
 	 * Register an object to be transmitted until it is disposed.
-	 * @param object cannot be null
+	 * 
+	 * @param object
+	 *            cannot be null
 	 */
 	public static void register(NetworkObject object) {
 		Objects.requireNonNull(object);
-		
+
 		networkObjects.add(object);
 	}
 
@@ -50,7 +54,8 @@ public class NetworkTransmitter {
 	public static void transmit() {
 		synchronized (CLIENT_SOCKET_LOCK) {
 			for (Socket clientSocket : clientSockets) {
-				try (ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream())) {
+				try {
+					ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 					for (NetworkObject object : networkObjects) {
 						outputStream.writeObject(object);
 					}
@@ -68,10 +73,10 @@ public class NetworkTransmitter {
 	}
 
 	/**
-	 * Remove all clients and registered objects from the transmitter. This will not dispose the objects.
+	 * Remove all clients and registered objects from the transmitter. This will
+	 * not dispose the objects.
 	 */
 	public static void dispose() {
-		System.out.println("dispoisng transmitter!");
 		synchronized (CLIENT_SOCKET_LOCK) {
 			for (Socket clientSocket : clientSockets) {
 				clientSocket.dispose();

@@ -42,7 +42,6 @@ public class NetworkReceiver {
 	 * Stops all server sockets and threads.
 	 */
 	public static void dispose() {
-		System.out.println("Disposing receiver!");
 		serverObject.getThread().interrupt();
 		if (serverObject.getSocket() != null) {
 			serverObject.getSocket().dispose();
@@ -64,8 +63,9 @@ public class NetworkReceiver {
 				while (!Thread.currentThread().isInterrupted()) {
 					serverObjects.setSocket(serverSocket.accept(null));
 
-					try (ObjectInputStream inputStream = new ObjectInputStream(
-							new BufferedInputStream(serverObjects.getSocket().getInputStream()))) {
+					try {
+						ObjectInputStream inputStream = new ObjectInputStream(
+								new BufferedInputStream(serverObjects.getSocket().getInputStream()));
 						networkObjects.add((NetworkObject) inputStream.readObject());
 					} catch (IOException exception) {
 						Gdx.app.error("Network", "Failure receiving data from server!", exception);
