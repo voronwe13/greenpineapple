@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.greenpineapple.input.GPAInputProcessor;
 
 public class GPAGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -16,6 +17,8 @@ public class GPAGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		guard = new Texture(Gdx.files.internal("Circle.png"));
 		robber = new Texture(Gdx.files.internal("Square.png"));
+		GPAInputProcessor inputProcessor = new GPAInputProcessor();
+		Gdx.input.setInputProcessor(inputProcessor);
 	}
 
 	@Override
