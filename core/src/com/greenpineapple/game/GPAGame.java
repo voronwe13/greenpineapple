@@ -4,30 +4,41 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.player.GPAPlayer;
 
 public class GPAGame extends ApplicationAdapter {
+	
 	SpriteBatch batch;
 	private Texture guard; //the guard graphic
 	private Texture robber; //the robber graphic
 	private GPAPlayer guardplayer, robberplayer;
 	public static final int screenwidth = 800, screenheight = 480;
 	
+    private Animation guardanimation, robberanimation;
+    private Texture guardsheet, robbersheet;              // #4
+    private TextureRegion[] guardframes, robberframes;             // #5
+    private TextureRegion   guardcurrentframe, robbercurrentframe;           // #7
+
+    float statetime;                                        // #8
+	
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		guard = new Texture(Gdx.files.internal("Circle.png"));
-		robber = new Texture(Gdx.files.internal("Square.png"));
 		guardplayer = new GPAPlayer();
 		robberplayer = new GPAPlayer();
+		guardplayer.setTexture("mandalorian.png");
+		robberplayer.setTexture("hansolo.png");
 		guardplayer.setPosition(10,10);
-		guardplayer.setPosition(300,300);
+		robberplayer.setPosition(300,300);
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();
 		inputProcessor.setPlayer(guardplayer);
 		Gdx.input.setInputProcessor(inputProcessor);
+        statetime = 0f;              
 	}
 
 	@Override
@@ -35,10 +46,14 @@ public class GPAGame extends ApplicationAdapter {
 		guardplayer.update();
 		robberplayer.update();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+		statetime += Gdx.graphics.getDeltaTime();
+        guardcurrentframe = guardplayer.getCurrentFrame(statetime);
+        robbercurrentframe = robberplayer.getCurrentFrame(statetime);
         batch.begin();
-        batch.draw(guard, guardplayer.getPositionX(), guardplayer.getPositionY());
-        batch.draw(robber, robberplayer.getPositionX(), robberplayer.getPositionY());
+        batch.draw(guardcurrentframe, guardplayer.getPositionX(), guardplayer.getPositionY());
+        batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
         batch.end();
 	}
 
 }
+

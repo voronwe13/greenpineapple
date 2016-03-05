@@ -32,16 +32,16 @@ public class GPAInputProcessor implements InputProcessor {
 	public boolean keyUp(int keycode) {
 		switch (keycode){
 		case Keys.W:
-			player.stopY();
+			player.moveDown();
 			break;
 		case Keys.A:
-			player.stopX();
+			player.moveRight();
 			break;
 		case Keys.S:
-			player.stopY();
+			player.moveUp();
 			break;
 		case Keys.D:
-			player.stopX();
+			player.moveLeft();
 			break;
 		}
 		return false;
