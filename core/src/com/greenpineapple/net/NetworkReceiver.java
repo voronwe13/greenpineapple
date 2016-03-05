@@ -12,20 +12,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.Socket;
 
 public class NetworkReceiver {
 
-	private static ServerObject serverObject;
-
 	private static Queue<NetworkObject> networkObjects = new ConcurrentLinkedQueue<>();
 
+	private static ServerSocket serverSocket;
+	private static Queue<Thread> threads = new ConcurrentLinkedQueue<>();
+	private static Queue<Socket> sockets = new ConcurrentLinkedQueue<>();
+	
 	/**
 	 * Create server socket to recieve information.
 	 */
 	public static void createServer() {
-		serverObject = createServerObject(NetworkConstants.PORT);
+		threads.add(createThread(NetworkReceiver::acceptSockets));
 	}
-
+	
 	/**
 	 * @return all objects updated by the servers since the last
 	 *         retrieveUpdates() call.
@@ -39,44 +42,52 @@ public class NetworkReceiver {
 	}
 
 	/**
-	 * Stops all server sockets and threads.
+	 * Stops all server sockets and threads. Clears any networkObjects from the queue.
 	 */
 	public static void dispose() {
-		serverObject.getThread().interrupt();
-		if (serverObject.getSocket() != null) {
-			serverObject.getSocket().dispose();
+		while (!threads.isEmpty()) {
+			threads.poll().interrupt();
+		}
+		serverSocket.dispose();
+		while (!sockets.isEmpty()) {
+			sockets.poll().dispose();
+		}
+		networkObjects.clear();
+	}
+	
+	private static Thread createThread(Runnable runnable) {
+		Thread thread = new Thread(runnable);
+		thread.start();
+		return thread;
+	}
+	
+	private static void acceptSockets() {
+		ServerSocketHints serverSocketHints = new ServerSocketHints();
+		serverSocketHints.acceptTimeout = 0; // No timeout.
+		
+		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, NetworkConstants.PORT, serverSocketHints);
+		
+		while (!Thread.currentThread().isInterrupted()) {
+			Socket socket = serverSocket.accept(null);
+			sockets.add(socket);
+			
+			threads.add(createThread(() -> receiveUpdates(socket)));
 		}
 	}
-
-	private static ServerObject createServerObject(int port) {
-		ServerObject serverObjects = new ServerObject();
-		serverObjects.setThread(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				ServerSocketHints serverSocketHint = new ServerSocketHints();
-				// 0 means no timeout. Probably not the greatest idea in
-				// production!
-				serverSocketHint.acceptTimeout = 0;
-
-				ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, port, serverSocketHint);
-
-				while (!Thread.currentThread().isInterrupted()) {
-					serverObjects.setSocket(serverSocket.accept(null));
-
-					try {
-						ObjectInputStream inputStream = new ObjectInputStream(
-								new BufferedInputStream(serverObjects.getSocket().getInputStream()));
-						networkObjects.add((NetworkObject) inputStream.readObject());
-					} catch (IOException exception) {
-						Gdx.app.error("Network", "Failure receiving data from server!", exception);
-					} catch (ClassNotFoundException exception) {
-						Gdx.app.error("Network", "Unrecognized data type from server!", exception);
-					}
-				}
+	
+	private static void receiveUpdates(Socket socket) {
+		while (!Thread.currentThread().isInterrupted()) {
+			ObjectInputStream inputStream;
+			try {
+				inputStream = new ObjectInputStream(
+						new BufferedInputStream(socket.getInputStream()));
+				networkObjects.add((NetworkObject) inputStream.readObject());
+			} catch (IOException exception) {
+				Gdx.app.error("Network", "Failure receiving data from server!", exception);
+			} catch (ClassNotFoundException exception) {
+				Gdx.app.error("Network", "Unrecognized data type from server!", exception);
 			}
-		}));
-		serverObjects.getThread().start();
 
-		return serverObjects;
+		}
 	}
 }
