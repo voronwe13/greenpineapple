@@ -2,19 +2,26 @@ package com.greenpineapple.input;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.greenpineapple.player.GPAPlayer;
 
 public class GPAInputProcessor implements InputProcessor {
+
+	private GPAPlayer player;
 
 	@Override
 	public boolean keyDown(int keycode) {
 		switch (keycode){
 		case Keys.W:
+			player.moveUp();
 			break;
 		case Keys.A:
+			player.moveLeft();
 			break;
 		case Keys.S:
+			player.moveDown();
 			break;
 		case Keys.D:
+			player.moveRight();
 			break;
 		}
 			
@@ -25,12 +32,16 @@ public class GPAInputProcessor implements InputProcessor {
 	public boolean keyUp(int keycode) {
 		switch (keycode){
 		case Keys.W:
+			player.stopY();
 			break;
 		case Keys.A:
+			player.stopX();
 			break;
 		case Keys.S:
+			player.stopY();
 			break;
 		case Keys.D:
+			player.stopX();
 			break;
 		}
 		return false;
@@ -72,4 +83,9 @@ public class GPAInputProcessor implements InputProcessor {
 		return false;
 	}
 
+	public void setPlayer(GPAPlayer player){
+		this.player = player;
+		
+	}
+	
 }
