@@ -36,8 +36,6 @@ public class ChatModule extends ApplicationAdapter {
 	private Skin skin;
 	private Stage stage;
 	private Label labelHostIPAddress;
-	private TextArea textPorts;
-	private TextButton buttonSetPorts;
 	private TextArea textPeers;
 	private TextButton buttonSetPeers;
 	private Label labelChatRoom;
@@ -105,8 +103,6 @@ public class ChatModule extends ApplicationAdapter {
 
 		// Create our controls
 		labelHostIPAddress = new Label(ipAddress, skin);
-		textPorts = new TextArea("", skin);
-		buttonSetPorts = new TextButton("Set Ports", skin);
 		textPeers = new TextArea("", skin);
 		buttonSetPeers = new TextButton("Set Peers", skin);
 		labelChatRoom = new Label("hello world", skin);
@@ -116,8 +112,6 @@ public class ChatModule extends ApplicationAdapter {
 
 		// Add them to scene
 		vg.addActor(labelHostIPAddress);
-		vg.addActor(textPorts);
-		vg.addActor(buttonSetPorts);
 		vg.addActor(textPeers);
 		vg.addActor(buttonSetPeers);
 		vg.addActor(labelChatRoom);
