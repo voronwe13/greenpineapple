@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class NetworkTransmitter {
 	private static final Object CLIENT_SOCKET_LOCK = new Object();
@@ -29,7 +30,14 @@ public class NetworkTransmitter {
 
 		SocketHints socketHints = new SocketHints();
 		socketHints.connectTimeout = NetworkConstants.CONNECTION_TIMEOUT;
-		Socket clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, NetworkConstants.PORT, socketHints);
+		Socket clientSocket; 
+		try {
+			clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, NetworkConstants.PORT, socketHints);
+		}
+		catch (GdxRuntimeException exception) {
+			Gdx.app.error("Network", "Couldn't connect to client at " + address, exception);
+			return;
+		}
 
 		synchronized (CLIENT_SOCKET_LOCK) {
 			clientSockets.add(clientSocket);
