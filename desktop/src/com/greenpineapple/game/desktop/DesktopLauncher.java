@@ -2,7 +2,7 @@ package com.greenpineapple.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.greenpineapple.game.GPAGame;
+import com.greenpineapple.net.chat.ChatModule;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.title = "Green Pineapple";
 		config.width = 800;
 		config.height = 480;
-		new LwjglApplication(new GPAGame(), config);
+		//new LwjglApplication(new GPAGame(), config);
+		new LwjglApplication(new ChatModule(), config);
 	}
 }
