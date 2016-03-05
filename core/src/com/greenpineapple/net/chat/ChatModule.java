@@ -135,7 +135,7 @@ public class ChatModule extends ApplicationAdapter {
 		stage.getCamera().position.set(VIRTUAL_SCREEN_WIDTH / 2, VIRTUAL_SCREEN_HEIGHT / 2, 0);
 
 		// Setup event to set ports.
-		createSetPortsEvent();
+		NetworkReceiver.createServer();
 
 		// Setup event to set peers.
 		createSetPeersEvent();
@@ -146,6 +146,8 @@ public class ChatModule extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
+		NetworkReceiver.dispose();
+		NetworkTransmitter.dispose();
 		batch.dispose();
 	}
 
@@ -163,21 +165,6 @@ public class ChatModule extends ApplicationAdapter {
 		batch.end();
 	}
 
-	private void createSetPortsEvent() {
-		buttonSetPorts.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				NetworkReceiver.dispose();
-				
-				String[] ports = textPorts.getText().split(";");
-				for (String port : ports) {
-					labelDebug.setText(port);
-					NetworkReceiver.addServer(Integer.valueOf(port));
-				}
-			}
-		});
-	}
-
 	private void createSetPeersEvent() {
 		buttonSetPeers.addListener(new ClickListener() {
 			@Override
@@ -186,8 +173,7 @@ public class ChatModule extends ApplicationAdapter {
 				
 				String[] networkAddresses = textPeers.getText().split(";");
 				for (String networkAddress : networkAddresses) {
-					String[] networkAddressComponents = networkAddress.split(":");
-					NetworkTransmitter.addClient(networkAddressComponents[0], Integer.valueOf(networkAddressComponents[1]));
+					NetworkTransmitter.addClient(networkAddress);
 				}
 				
 				NetworkTransmitter.register(messageToNetwork);

@@ -15,26 +15,20 @@ import com.badlogic.gdx.net.ServerSocketHints;
 
 public class NetworkReceiver {
 
-	private static final Object SERVER_OBJECT_LOCK = new Object();
-	private static Queue<ServerObject> serverObjects = new ConcurrentLinkedQueue<>();
+	private static ServerObject serverObject;
 
 	private static Queue<NetworkObject> networkObjects = new ConcurrentLinkedQueue<>();
 
 	/**
-	 * Listens on the given port for updates.
-	 * 
-	 * @param port
+	 * Create server socket to recieve information.
 	 */
-	public static void addServer(int port) {
-		ServerObject serverObject = createServerObject(port);
-
-		synchronized (SERVER_OBJECT_LOCK) {
-			serverObjects.add(serverObject);
-		}
+	public static void createServer() {
+		serverObject = createServerObject(NetworkConstants.PORT);
 	}
 
 	/**
-	 * @return all objects updated by the servers since the last retrieveUpdates() call.
+	 * @return all objects updated by the servers since the last
+	 *         retrieveUpdates() call.
 	 */
 	public static List<NetworkObject> retrieveUpdates() {
 		List<NetworkObject> updatedObjects = new ArrayList<>();
@@ -48,13 +42,10 @@ public class NetworkReceiver {
 	 * Stops all server sockets and threads.
 	 */
 	public static void dispose() {
-		synchronized (SERVER_OBJECT_LOCK) {
-			for (ServerObject serverObject : serverObjects) {
-				serverObject.getThread().interrupt();
-				if (serverObject.getSocket() != null) {
-					serverObject.getSocket().dispose();
-				}
-			}
+		System.out.println("Disposing receiver!");
+		serverObject.getThread().interrupt();
+		if (serverObject.getSocket() != null) {
+			serverObject.getSocket().dispose();
 		}
 	}
 

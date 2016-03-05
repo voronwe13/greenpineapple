@@ -12,8 +12,6 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class NetworkTransmitter {
-	private static final int CONNECT_TIMEOUT = 4_000;
-
 	private static final Object CLIENT_SOCKET_LOCK = new Object();
 	private static Queue<Socket> clientSockets = new ConcurrentLinkedQueue<>();
 	
@@ -24,12 +22,12 @@ public class NetworkTransmitter {
 	 * @param address cannot be null
 	 * @param port
 	 */
-	public static void addClient(String address, int port) {
+	public static void addClient(String address) {
 		Objects.requireNonNull(address);
 		
 		SocketHints socketHints = new SocketHints();
-		socketHints.connectTimeout = CONNECT_TIMEOUT;
-		Socket clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, port, socketHints);
+		socketHints.connectTimeout = NetworkConstants.CONNECTION_TIMEOUT;
+		Socket clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, NetworkConstants.PORT, socketHints);
 
 		synchronized (CLIENT_SOCKET_LOCK) {
 			clientSockets.add(clientSocket);
@@ -73,6 +71,7 @@ public class NetworkTransmitter {
 	 * Remove all clients and registered objects from the transmitter. This will not dispose the objects.
 	 */
 	public static void dispose() {
+		System.out.println("dispoisng transmitter!");
 		synchronized (CLIENT_SOCKET_LOCK) {
 			for (Socket clientSocket : clientSockets) {
 				clientSocket.dispose();
