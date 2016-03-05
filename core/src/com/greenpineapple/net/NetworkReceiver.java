@@ -1,6 +1,7 @@
 package com.greenpineapple.net;
 
 import java.io.BufferedInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -82,6 +83,12 @@ public class NetworkReceiver {
 				inputStream = new ObjectInputStream(
 						new BufferedInputStream(socket.getInputStream()));
 				networkObjects.add((NetworkObject) inputStream.readObject());
+			} catch (EOFException exception) {
+				Gdx.app.error("Network", "A client left?", exception);
+				threads.remove(Thread.currentThread());
+				Thread.currentThread().interrupt();
+				sockets.remove(socket);
+				socket.dispose();
 			} catch (IOException exception) {
 				Gdx.app.error("Network", "Failure receiving data from server!", exception);
 			} catch (ClassNotFoundException exception) {
