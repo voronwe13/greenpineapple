@@ -2,6 +2,7 @@ package com.greenpineapple.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,6 +13,8 @@ import com.greenpineapple.player.GPAPlayer;
 
 public class GPAGame extends ApplicationAdapter {
 	
+	String[] lines;
+
 	SpriteBatch batch;
 	private Texture guard; //the guard graphic
 	private Texture robber; //the robber graphic
@@ -28,6 +31,7 @@ public class GPAGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+
 		batch = new SpriteBatch();
 		guardplayer = new GPAPlayer();
 		robberplayer = new GPAPlayer();
@@ -38,6 +42,10 @@ public class GPAGame extends ApplicationAdapter {
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();
 		inputProcessor.setPlayer(guardplayer);
 		Gdx.input.setInputProcessor(inputProcessor);
+		FileHandle file = Gdx.files.internal("MapTest.txt");
+		String text = file.readString();
+		lines = text.split("\n");
+		System.out.println(lines.toString());
         statetime = 0f;              
 	}
 
