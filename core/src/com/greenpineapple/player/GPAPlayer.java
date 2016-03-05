@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.greenpineapple.game.GPAGame;
+import com.greenpineapple.GreenPineappleGame;
 
 public class GPAPlayer implements Serializable {
 
@@ -76,13 +76,13 @@ public class GPAPlayer implements Serializable {
 	
 	public void update(){
 		status.positionx += movingx;
-		if(status.positionx > GPAGame.SCREEN_WIDTH)
-			status.positionx = GPAGame.SCREEN_WIDTH;
+		if(status.positionx > GreenPineappleGame.SCREEN_WIDTH)
+			status.positionx = GreenPineappleGame.SCREEN_WIDTH;
 		if(status.positionx < 0)
 			status.positionx = 0;
 		status.positiony += movingy;
-		if(status.positiony > GPAGame.SCREEN_HEIGHT)
-			status.positiony = GPAGame.SCREEN_HEIGHT;
+		if(status.positiony > GreenPineappleGame.SCREEN_HEIGHT)
+			status.positiony = GreenPineappleGame.SCREEN_HEIGHT;
 		if(status.positiony < 0)
 			status.positiony = 0;
 	}
