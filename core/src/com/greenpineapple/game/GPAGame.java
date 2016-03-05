@@ -12,6 +12,7 @@ import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.player.GPAPlayer;
 
 public class GPAGame extends ApplicationAdapter {
+	public static final int SCREEN_WIDTH = 800, SCREEN_HEIGHT = 480;
 	
 	String[] lines;
 
@@ -19,7 +20,7 @@ public class GPAGame extends ApplicationAdapter {
 	private Texture guard; //the guard graphic
 	private Texture robber; //the robber graphic
 	private GPAPlayer guardplayer, robberplayer;
-	public static final int screenwidth = 800, screenheight = 480;
+
 	
     private Animation guardanimation, robberanimation;
     private Texture guardsheet, robbersheet;              // #4
