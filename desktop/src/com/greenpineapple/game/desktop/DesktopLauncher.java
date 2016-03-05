@@ -7,12 +7,11 @@ import com.greenpineapple.net.chat.ChatModule;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
+		GPAGame game = new GPAGame();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Green Pineapple";
-		config.width = 800;
-		config.height = 480;
-		GPAGame game = new GPAGame();
-		game.setScreenDimensions(config.width, config.height);
+		config.width = GPAGame.screenwidth;
+		config.height = GPAGame.screenheight;
 		new LwjglApplication(game, config);
 		//new LwjglApplication(new ChatModule(), config);
 	}

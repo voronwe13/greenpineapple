@@ -13,7 +13,7 @@ public class GPAGame extends ApplicationAdapter {
 	private Texture guard; //the guard graphic
 	private Texture robber; //the robber graphic
 	private GPAPlayer guardplayer, robberplayer;
-	private int screenwidth, screenheight;
+	public static final int screenwidth = 800, screenheight = 480;
 	
 	
 	@Override
@@ -41,16 +41,4 @@ public class GPAGame extends ApplicationAdapter {
         batch.end();
 	}
 
-	public int getScreenWidth() {
-		return screenwidth;
-	}
-	
-	public int getScreenHeight(){
-		return screenheight;
-	}
-
-	public void setScreenDimensions(int width, int height) {
-		screenwidth = width;
-		screenheight = height;
-	}
 }

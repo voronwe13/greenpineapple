@@ -1,5 +1,7 @@
 package com.greenpineapple.player;
 
+import com.greenpineapple.game.GPAGame;
+
 public class GPAPlayer {
 
 	private int speedx = 5, speedy = 5;
@@ -49,13 +51,13 @@ public class GPAPlayer {
 	
 	public void update(){
 		positionx += movingx;
-		if(positionx > 800)
-			positionx = 800;
+		if(positionx > GPAGame.screenwidth)
+			positionx = GPAGame.screenwidth;
 		if(positionx < 0)
 			positionx = 0;
 		positiony += movingy;
-		if(positiony > 480)
-			positiony = 480;
+		if(positiony > GPAGame.screenheight)
+			positiony = GPAGame.screenheight;
 		if(positiony < 0)
 			positiony = 0;
 	}
