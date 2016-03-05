@@ -3,7 +3,7 @@ package com.greenpineapple.game.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.greenpineapple.game.GPAGame;
-import com.greenpineapple.net.chat.ChatModule;
+import com.greenpineapple.net.chat.OriginalChatModule;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		config.width = GPAGame.screenwidth;
 		config.height = GPAGame.screenheight;
 //		new LwjglApplication(new GPAGame(), config);
-		new LwjglApplication(new ChatModule(), config);
+//		new LwjglApplication(new ChatModule(), config);
+		new LwjglApplication(new OriginalChatModule(), config);
 	}
 }
