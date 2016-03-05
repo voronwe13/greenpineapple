@@ -43,6 +43,7 @@ public class ChatModule extends ApplicationAdapter {
 	private Label labelChatRoom;
 	private TextArea textMessage;
 	private TextButton buttonSendMessage;
+	private Label labelDebug;
 	
 	// Pick a resolution that is 16:9 but not unreadibly small
 	public final static float VIRTUAL_SCREEN_HEIGHT = 960;
@@ -111,6 +112,7 @@ public class ChatModule extends ApplicationAdapter {
 		labelChatRoom = new Label("hello world", skin);
 		textMessage = new TextArea("", skin);
 		buttonSendMessage = new TextButton("Send Message", skin);
+		labelDebug = new Label("", skin);
 
 		// Add them to scene
 		vg.addActor(labelHostIPAddress);
@@ -121,6 +123,7 @@ public class ChatModule extends ApplicationAdapter {
 		vg.addActor(labelChatRoom);
 		vg.addActor(textMessage);
 		vg.addActor(buttonSendMessage);
+		vg.addActor(labelDebug);
 
 		// Add scene to stage
 		stage.addActor(vg);
@@ -168,6 +171,7 @@ public class ChatModule extends ApplicationAdapter {
 				
 				String[] ports = textPorts.getText().split(";");
 				for (String port : ports) {
+					labelDebug.setText(port);
 					NetworkReceiver.addServer(Integer.valueOf(port));
 				}
 			}
