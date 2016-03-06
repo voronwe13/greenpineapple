@@ -40,6 +40,7 @@ public class MainMenuScreen implements Screen {
 
 	private MainMenuController mainMenuController;
 	TextButton buttonInvitePlayer;
+	TextButton buttonPlay;
 
 	public MainMenuScreen(Game game) {
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -65,7 +66,7 @@ public class MainMenuScreen implements Screen {
 		stage.getCamera().viewportHeight = GreenPineappleGame.SCREEN_HEIGHT;
 		stage.getCamera().position.set(GreenPineappleGame.SCREEN_WIDTH / 2, GreenPineappleGame.SCREEN_HEIGHT / 2, 0);
 
-		mainMenuController = new MainMenuController(this, skin);
+		mainMenuController = new MainMenuController(this, skin, game);
 	}
 
 	@Override
@@ -140,7 +141,8 @@ public class MainMenuScreen implements Screen {
 
 	private Actor createPlayRow(Skin skin) {
 		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
-		columns.addActor(new TextButton("Play!", skin));
+		buttonPlay = new TextButton("Play!", skin);
+		columns.addActor(buttonPlay);
 		return columns;
 	}
 
