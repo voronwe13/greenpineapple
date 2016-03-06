@@ -6,7 +6,6 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -17,34 +16,26 @@ import com.greenpineapple.map.Treasure;
 import com.greenpineapple.player.GPAPlayer;
 import com.greenpineapple.player.PlayerType;
 
-import box2dLight.PointLight;
-
 public class GameScreen implements Screen {
-
-	private String[] lines;
-
 	private SpriteBatch batch;
-	// private GPAPlayer guardplayer, robberplayer;
-	private List<GPAPlayer> guardplayers, robberplayers;
+
+	private List<GPAPlayer> players = new ArrayList<>();;
+
 	private List<Treasure> treasures;
 
-    float statetime;
-    
-	private Texture mapimage;
-	private TextureRegion guardcurrentframe, robbercurrentframe;
+	float statetime;
 
-    Map map;
-	private PointLight pointlight2;
 	private GPALighting lighting;
-	
-    public GameScreen(GreenPineappleGame game) {
+
+	private Map map;
+
+	public GameScreen(GreenPineappleGame game) {
 		batch = new SpriteBatch();
 		map = game.getMap();
+
 		List<Vector2> guardpositions = map.getGuardPositions();
 		List<Vector2> robberpositions = map.getRobberPositions();
 		List<Vector2> treasurepositions = map.getTreasurePositions();
-		guardplayers = new ArrayList<GPAPlayer>();
-		robberplayers = new ArrayList<GPAPlayer>();
 		treasures = new ArrayList<Treasure>();
 		for (int i = 0; i < guardpositions.size(); i++) {
 			GPAPlayer guardplayer = new GPAPlayer(PlayerType.GUARD);
@@ -52,8 +43,7 @@ public class GameScreen implements Screen {
 			int posx = (int) guardpositions.get(i).x;
 			int posy = (int) guardpositions.get(i).y;
 			guardplayer.setPosition(posx, posy);
-			guardplayer.setMap(map);
-			guardplayers.add(guardplayer);
+			players.add(guardplayer);
 		}
 		for (int i = 0; i < robberpositions.size(); i++) {
 			GPAPlayer robberplayer = new GPAPlayer(PlayerType.ROBBER);
@@ -61,15 +51,14 @@ public class GameScreen implements Screen {
 			int posx = (int) robberpositions.get(i).x;
 			int posy = (int) robberpositions.get(i).y;
 			robberplayer.setPosition(posx, posy);
-			robberplayer.setMap(map);
-			robberplayers.add(robberplayer);
+			players.add(robberplayer);
 		}
 		for (Vector2 treasureposition : treasurepositions) {
 			Treasure treasure = new Treasure(treasureposition);
 			treasures.add(treasure);
 		}
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();
-		inputProcessor.setPlayer(guardplayers.get(0));
+		inputProcessor.setPlayer(players.get(0));
 		Gdx.input.setInputProcessor(inputProcessor);
 		lighting = GPALighting.getInstance();
 		lighting.initialize();
@@ -85,11 +74,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		for (GPAPlayer guardplayer : guardplayers) {
-			guardplayer.update();
-		}
-		for (GPAPlayer robberplayer : robberplayers) {
-			robberplayer.update();
+		for (GPAPlayer player : players) {
+			player.update(map);
 		}
 
 		lighting.preRender(delta);
@@ -97,17 +83,12 @@ public class GameScreen implements Screen {
 													// the screen.
 
 		statetime += Gdx.graphics.getDeltaTime();
-        mapimage = map.getImage();
-        batch.setProjectionMatrix(lighting.getCamera().combined);
-        batch.begin();
-        batch.draw(mapimage, 0, 0);
-		for(GPAPlayer guardplayer:guardplayers){
-	        guardcurrentframe = guardplayer.getCurrentFrame(statetime);
-	        batch.draw(guardcurrentframe, guardplayer.getPositionX(), guardplayer.getPositionY());
-		}
-		for (GPAPlayer robberplayer : robberplayers) {
-			robbercurrentframe = robberplayer.getCurrentFrame(statetime);
-			batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
+		batch.setProjectionMatrix(lighting.getCamera().combined);
+		batch.begin();
+		batch.draw(map.getImage(), 0, 0);
+		for (GPAPlayer player : players) {
+			TextureRegion playerCurrentFrame = player.getCurrentFrame(statetime);
+			batch.draw(playerCurrentFrame, player.getPositionX(), player.getPositionY());
 		}
 		batch.end();
 		lighting.postRender();
