@@ -3,7 +3,6 @@ package com.greenpineapple.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
