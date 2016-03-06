@@ -32,15 +32,15 @@ public class GameScreen implements Screen {
 	private String[] lines;
 
 	private SpriteBatch batch;
-	//private GPAPlayer guardplayer, robberplayer;
+	// private GPAPlayer guardplayer, robberplayer;
 	private List<GPAPlayer> guardplayers, robberplayers;
 	private List<Treasure> treasures;
-	
-    private Texture mapimage;
-    private TextureRegion   guardcurrentframe, robbercurrentframe;
 
     float statetime;
     
+	private Texture mapimage;
+	private TextureRegion guardcurrentframe, robbercurrentframe;
+
     MapClass map;
 	private PointLight pointlight2;
 	private GPALighting lighting;
@@ -54,25 +54,25 @@ public class GameScreen implements Screen {
 		guardplayers = new ArrayList<GPAPlayer>();
 		robberplayers = new ArrayList<GPAPlayer>();
 		treasures = new ArrayList<Treasure>();
-		for(int i=0; i<guardpositions.size(); i++){
+		for (int i = 0; i < guardpositions.size(); i++) {
 			GPAPlayer guardplayer = new GPAPlayer(PlayerType.GUARD);
 			guardplayer.setTexture("Guard Sprite polished small.png");
-			int posx = (int)guardpositions.get(i).x;
-			int posy = (int)guardpositions.get(i).y;
+			int posx = (int) guardpositions.get(i).x;
+			int posy = (int) guardpositions.get(i).y;
 			guardplayer.setPosition(posx, posy);
 			guardplayer.setMap(map);
 			guardplayers.add(guardplayer);
 		}
-		for(int i=0; i<robberpositions.size(); i++){
+		for (int i = 0; i < robberpositions.size(); i++) {
 			GPAPlayer robberplayer = new GPAPlayer(PlayerType.ROBBER);
 			robberplayer.setTexture("Thief Sprite polished small.png");
-			int posx = (int)robberpositions.get(i).x;
-			int posy = (int)robberpositions.get(i).y;
+			int posx = (int) robberpositions.get(i).x;
+			int posy = (int) robberpositions.get(i).y;
 			robberplayer.setPosition(posx, posy);
 			robberplayer.setMap(map);
 			robberplayers.add(robberplayer);
 		}
-		for(Vector2 treasureposition:treasurepositions){
+		for (Vector2 treasureposition : treasurepositions) {
 			Treasure treasure = new Treasure(treasureposition);
 			treasures.add(treasure);
 		}
@@ -81,24 +81,29 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(inputProcessor);
 		lighting = GPALighting.getInstance();
 		lighting.initialize();
+
 		statetime = 0f;
 	}
-    
+
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void render(float delta) {
-		for(GPAPlayer guardplayer:guardplayers){
+		for (GPAPlayer guardplayer : guardplayers) {
 			guardplayer.update();
 		}
-		for(GPAPlayer robberplayer:robberplayers){
+		for (GPAPlayer robberplayer : robberplayers) {
 			robberplayer.update();
 		}
+
 		lighting.preRender(delta);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears
+													// the screen.
+
 		statetime += Gdx.graphics.getDeltaTime();
         mapimage = map.getImage();
         batch.setProjectionMatrix(lighting.getCamera().combined);
@@ -108,8 +113,8 @@ public class GameScreen implements Screen {
 	        guardcurrentframe = guardplayer.getCurrentFrame(statetime);
 	        batch.draw(guardcurrentframe, guardplayer.getPositionX(), guardplayer.getPositionY());
 		}
-		for(GPAPlayer robberplayer:robberplayers){
-	        robbercurrentframe = robberplayer.getCurrentFrame(statetime);
+		for (GPAPlayer robberplayer : robberplayers) {
+			robbercurrentframe = robberplayer.getCurrentFrame(statetime);
 			batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
 		}
 		batch.end();
@@ -125,25 +130,25 @@ public class GameScreen implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
