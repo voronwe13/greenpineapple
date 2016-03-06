@@ -1,5 +1,8 @@
 package com.greenpineapple.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,8 +30,9 @@ public class MainMenuScreen implements Screen {
 	private Stage stage;
 
 	private VerticalGroup rows;
+	private List<RemotePlayerRow> remotePlayerRows = new ArrayList<>();
 	private HorizontalGroup invitePlayerRow;
-	
+
 	TextButton buttonInvitePlayer;
 	TextButton buttonPlay;
 	TextField textPlayerName;
@@ -38,7 +42,7 @@ public class MainMenuScreen implements Screen {
 
 	public MainMenuScreen(Game game) {
 		String ipAddress = Local.getIPAddress();
-		
+
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
 		stage = new Stage();
@@ -71,6 +75,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		remotePlayerRows.forEach(row -> row.render());
+
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
@@ -99,9 +105,10 @@ public class MainMenuScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 	}
-	
+
 	RemotePlayerRow addRemotePlayerRow(Skin skin) {
 		RemotePlayerRow playerRow = new RemotePlayerRow(skin);
+		remotePlayerRows.add(playerRow);
 		rows.addActorBefore(invitePlayerRow, playerRow);
 		return playerRow;
 	}
