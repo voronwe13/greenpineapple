@@ -61,5 +61,10 @@ public class NetworkBoolean implements NetworkObject {
 	public int hashCode() {
 		return Objects.hash(source, description, disposed, checked);
 	}
+	
+	@Override
+	public String toString() {
+		return source + "-" + description + ": "+ checked;
+	}
 
 }

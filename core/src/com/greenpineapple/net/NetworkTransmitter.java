@@ -2,6 +2,7 @@ package com.greenpineapple.net;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.SocketException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,11 +74,20 @@ public class NetworkTransmitter {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
 						if (clientSocket.updateChangeMap(object)) {
+							System.out.println("writing object: " + object);
 							outputStream.writeObject(object);
 						}
 					}
 					outputStream.flush();
 					outputStream.reset();
+				} catch (SocketException exception) {
+					clientSockets.remove(clientSocket);
+					clientSocket.getSocket().dispose();
+					try {
+						clientSocket.getOutputStream().close();
+					} catch (IOException ioException) {
+						Gdx.app.error("Network", "Error closing output stream", ioException);
+					}
 				} catch (IOException exception) {
 					Gdx.app.error("Network", "Failure sending data to client!", exception);
 				}
