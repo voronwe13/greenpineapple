@@ -105,14 +105,14 @@ public class GameScreen implements Screen {
 		for (PlayerController playerController : Players.getAllPlayers()) {
 			GPAPlayer player;
 			if (playerController.isPlayerGuardTeam()) {
-				player = new GPAPlayer(playerController.getPlayerPhysicalState());
+				player = new GPAPlayer(playerController);
 				player.setTexture("Guard Sprite polished small.png");
 				int posx = (int) guardPosition.x;
 				int posy = (int) guardPosition.y;
 				player.setPosition(posx, posy);
 				players.add(player);
 			} else if (playerController.isPlayerThiefTeam()) {
-				player = new GPAPlayer(playerController.getPlayerPhysicalState());
+				player = new GPAPlayer(playerController);
 				player.setTexture("Thief Sprite polished small.png");
 				int posx = (int) thiefPosition.x;
 				int posy = (int) thiefPosition.y;

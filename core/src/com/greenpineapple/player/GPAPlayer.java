@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.greenpineapple.map.Map;
-import com.greenpineapple.net.NetworkObjectDescription;
 
 public class GPAPlayer {
 
@@ -14,78 +13,79 @@ public class GPAPlayer {
 	private static final int FRAME_ROWS = 4;
 
 	private int speedx = 3, speedy = 3;
-	private PhysicalState physicalState;
 	private int movingx = 0, movingy = 0;
 	private Texture spritesheet;
 	private TextureRegion[][] spriteframes;
 	private Animation animationleft, animationright, animationup, animationdown, currentanimation;
 	private Rectangle playerrect;
 	
-	public GPAPlayer(PhysicalState physicalState) {
-		this.physicalState = physicalState;
+	private PlayerController playerController;
+	
+	public GPAPlayer(PlayerController playerController) {
+		this.playerController = playerController;
 		playerrect = new Rectangle();
 	}
 
 	public int getPositionX() {
-		return physicalState.positionx;
+		return playerController.getPlayerPhysicalState().positionx;
 	}
 
 	public void setPositionX(int positionx) {
-		physicalState.positionx = positionx;
+		playerController.getPlayerPhysicalState().positionx = positionx;
 	}
 
 	public int getPositionY() {
-		return physicalState.positiony;
+		return playerController.getPlayerPhysicalState().positiony;
 	}
 
 	public void setPositionY(int positiony) {
-		physicalState.positiony = positiony;
+		playerController.getPlayerPhysicalState().positiony = positiony;
 	}
 
 	public void setPosition(int x, int y) {
-		physicalState.positionx = x;
-		physicalState.positiony = y;
+		playerController.getPlayerPhysicalState().positionx = x;
+		playerController.getPlayerPhysicalState().positiony = y;
 	}
 
 	public void moveLeft() {
 		movingx -= speedx;
-		physicalState.facingdirection.x -= 1;
+		playerController.getPlayerPhysicalState().facingdirection.x -= 1;
 		if (movingx < 0)
 			currentanimation = animationleft;
 	}
 
 	public void moveUp() {
 		movingy += speedy;
-		physicalState.facingdirection.y += 1;
+		playerController.getPlayerPhysicalState().facingdirection.y += 1;
 		if (movingy > 0)
 			currentanimation = animationup;
 	}
 
 	public void moveRight() {
 		movingx += speedx;
-		physicalState.facingdirection.x += 1;
+		playerController.getPlayerPhysicalState().facingdirection.x += 1;
 		if (movingx > 0)
 			currentanimation = animationright;
 	}
 
 	public void moveDown() {
 		movingy -= speedy;
-		physicalState.facingdirection.y -= 1;
+		playerController.getPlayerPhysicalState().facingdirection.y -= 1;
 		if (movingy < 0)
 			currentanimation = animationdown;
 	}
 
 	public void update(Map map) {
-		playerrect.x = physicalState.positionx + movingx;
+		playerrect.x = playerController.getPlayerPhysicalState().positionx + movingx;
 		if (!map.checkCollision(playerrect))
-			physicalState.positionx += movingx;
+			playerController.getPlayerPhysicalState().positionx += movingx;
 		else
-			playerrect.x = physicalState.positionx;
-		playerrect.y = physicalState.positiony + movingy;
+			playerrect.x = playerController.getPlayerPhysicalState().positionx;
+		playerrect.y = playerController.getPlayerPhysicalState().positiony + movingy;
 		if (!map.checkCollision(playerrect))
-			physicalState.positiony += movingy;
+			playerController.getPlayerPhysicalState().positiony += movingy;
 		else
-			playerrect.y = physicalState.positiony;
+			playerrect.y = playerController.getPlayerPhysicalState().positiony;
 	}
 
 	public void stopY() {
