@@ -25,6 +25,7 @@ public class MainMenuController {
 	private NetworkBoolean playerThieves;
 
 	private List<ClientPlayerController> controllers = new ArrayList<>();
+	private List<NetworkObject> unclaimedNetworkObjects = new ArrayList<>();
 
 	public MainMenuController(MainMenuScreen screen, Skin skin, Game game, String ipAddress) {
 		registerNetworkObjects(screen, ipAddress);
@@ -44,13 +45,17 @@ public class MainMenuController {
 	}
 
 	public void checkNetwork() {
-		List<NetworkObject> networkObjects = NetworkReceiver.retrieveUpdates();
-
+		List<NetworkObject> networkObjects = new ArrayList<>(unclaimedNetworkObjects);
+		networkObjects.addAll(NetworkReceiver.retrieveUpdates());
+		
+		unclaimedNetworkObjects.clear();
 		for (NetworkObject networkObject : networkObjects) {
 			Optional<ClientPlayerController> matchingController = controllers.parallelStream()
 					.filter(controller -> controller.getSource().equals(networkObject.getSource())).findAny();
 			if (matchingController.isPresent()) {
 				matchingController.get().actOn(networkObject);
+			} else {
+				unclaimedNetworkObjects.add(networkObject);
 			}
 		}
 	}
