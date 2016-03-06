@@ -2,10 +2,13 @@ package com.greenpineapple.player;
 
 import java.io.Serializable;
 
+import Map.MapClass;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.greenpineapple.GreenPineappleGame;
 
 public class GPAPlayer implements Serializable {
@@ -19,10 +22,13 @@ public class GPAPlayer implements Serializable {
 	private Texture spritesheet;
 	private TextureRegion[][] spriteframes;
 	private Animation animationleft, animationright, animationup, animationdown, currentanimation;
+	private MapClass map;
+	private Rectangle playerrect;
 	
 	public GPAPlayer() {
 		super();
 		status = new PlayerStatus();
+		playerrect = new Rectangle();
 	}
 	
 	public int getPositionX() {
@@ -75,16 +81,16 @@ public class GPAPlayer implements Serializable {
 	}
 	
 	public void update(){
-		status.positionx += movingx;
-		if(status.positionx > GreenPineappleGame.SCREEN_WIDTH)
-			status.positionx = GreenPineappleGame.SCREEN_WIDTH;
-		if(status.positionx < 0)
-			status.positionx = 0;
-		status.positiony += movingy;
-		if(status.positiony > GreenPineappleGame.SCREEN_HEIGHT)
-			status.positiony = GreenPineappleGame.SCREEN_HEIGHT;
-		if(status.positiony < 0)
-			status.positiony = 0;
+		playerrect.x = status.positionx + movingx;
+		if(!map.checkCollision(playerrect))
+			status.positionx += movingx;
+		else
+			playerrect.x = status.positionx;
+		playerrect.y = status.positiony + movingy;
+		if(!map.checkCollision(playerrect))
+			status.positiony += movingy;
+		else
+			playerrect.y = status.positiony;
 	}
 	
 	public void stopY() {
@@ -105,6 +111,8 @@ public class GPAPlayer implements Serializable {
                 spriteframes[i][j] = tmp[i][j];
             }
         }
+        playerrect.width = spriteframes[0][0].getRegionWidth();
+        playerrect.height = spriteframes[0][0].getRegionHeight();
         animationup = new Animation(0.025f, spriteframes[0]);
         animationright = new Animation(0.025f, spriteframes[1]);
         animationdown = new Animation(0.025f, spriteframes[2]);
@@ -123,5 +131,10 @@ public class GPAPlayer implements Serializable {
 		}
 		
         return currentanimation.getKeyFrame(statetime, true);
+	}
+
+
+	public void setMap(MapClass map) {
+		this.map = map;
 	}
 }
