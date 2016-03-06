@@ -42,6 +42,9 @@ public class MainMenuScreen implements Screen {
 	TextButton buttonInvitePlayer;
 	TextButton buttonPlay;
 	TextField textPlayerName;
+	CheckBox checkReady;
+	CheckBox checkGuards;
+	CheckBox checkThieves;
 
 	public MainMenuScreen(Game game) {
 		String ipAddress = getIPAddress();
@@ -122,13 +125,15 @@ public class MainMenuScreen implements Screen {
 
 	private Actor createHostPlayerRow(Skin skin, String ipAddress) {
 		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
-		columns.addActor(new CheckBox(" Ready?", skin));
+		checkReady = new CheckBox(" Ready?", skin);
+		checkReady.setDisabled(true);
+		columns.addActor(checkReady);
 		textPlayerName = new TextField("Player One", skin);
 		columns.addActor(textPlayerName);
 		columns.addActor(new Label(ipAddress, skin));
 
-		CheckBox checkGuards = new CheckBox(" Guards", skin);
-		CheckBox checkThieves = new CheckBox(" Thieves", skin);
+		checkGuards = new CheckBox(" Guards", skin);
+		checkThieves = new CheckBox(" Thieves", skin);
 
 		columns.addActor(checkGuards);
 		columns.addActor(checkThieves);
@@ -168,8 +173,6 @@ public class MainMenuScreen implements Screen {
 			Gdx.app.error("Network", "Couldn't find local IP address!", exception);
 		}
 
-		// Print the contents of our array to a string. Yeah, should have used
-		// StringBuilder
 		String ipAddress = null;
 		try {
 			ipAddress = addresses.stream().filter(address -> address.startsWith("192")).findAny().get();

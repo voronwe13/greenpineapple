@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.greenpineapple.net.NetworkObject;
 import com.greenpineapple.net.NetworkObjectDescription;
 import com.greenpineapple.net.NetworkTransmitter;
+import com.greenpineapple.net.primitive.NetworkBoolean;
 import com.greenpineapple.net.primitive.NetworkString;
 
 public class ClientPlayerController {
@@ -30,6 +31,15 @@ public class ClientPlayerController {
 	public void actOn(NetworkObject networkObject) {
 		if (networkObject.getDescription().equals(NetworkObjectDescription.PLAYER_NAME)) {
 			row.labelPlayerName.setText(((NetworkString) networkObject).getMessage());
+		}
+		else if (networkObject.getDescription().equals(NetworkObjectDescription.PLAYER_READY)) {
+			row.checkReady.setChecked(((NetworkBoolean) networkObject).isChecked());
+		}
+		else if (networkObject.getDescription().equals(NetworkObjectDescription.PLAYER_GUARD_TEAM)) {
+			row.checkGuards.setChecked(((NetworkBoolean) networkObject).isChecked());
+		}
+		else if (networkObject.getDescription().equals(NetworkObjectDescription.PLAYER_THIEF_TEAM)) {
+			row.checkThieves.setChecked(((NetworkBoolean) networkObject).isChecked());
 		}
 	}
 	

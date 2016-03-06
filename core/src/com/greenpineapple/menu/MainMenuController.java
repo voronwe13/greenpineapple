@@ -14,21 +14,27 @@ import com.greenpineapple.net.NetworkObject;
 import com.greenpineapple.net.NetworkObjectDescription;
 import com.greenpineapple.net.NetworkReceiver;
 import com.greenpineapple.net.NetworkTransmitter;
+import com.greenpineapple.net.primitive.NetworkBoolean;
 import com.greenpineapple.net.primitive.NetworkString;
 
 public class MainMenuController {
 
-	private final NetworkString playerName;
+	private NetworkString playerName;
+	private NetworkBoolean playerReady;
+	private NetworkBoolean playerGuards;
+	private NetworkBoolean playerThieves;
+
 	private List<ClientPlayerController> controllers = new ArrayList<>();
 
 	public MainMenuController(MainMenuScreen screen, Skin skin, Game game, String ipAddress) {
-		playerName = new NetworkString(ipAddress, NetworkObjectDescription.PLAYER_NAME);
-		playerName.setMessage(screen.textPlayerName.getText());
-		NetworkTransmitter.register(playerName);
+		registerNetworkObjects(screen, ipAddress);
 
 		createInvitePlayerListener(screen, skin);
 		createPlayButtonListener(screen, game);
 		createPlayerNameListener(screen);
+		createPlayerReadyListener(screen);
+		createPlayerGuardTeamListener(screen);
+		createPlayerThiefTeamListener(screen);
 	}
 
 	public void dispose() {
@@ -47,6 +53,24 @@ public class MainMenuController {
 				matchingController.get().actOn(networkObject);
 			}
 		}
+	}
+
+	private void registerNetworkObjects(MainMenuScreen screen, String ipAddress) {
+		playerName = new NetworkString(ipAddress, NetworkObjectDescription.PLAYER_NAME);
+		playerName.setMessage(screen.textPlayerName.getText());
+		NetworkTransmitter.register(playerName);
+		
+		playerReady = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_READY);
+		playerReady.setChecked(screen.checkReady.isChecked());
+		NetworkTransmitter.register(playerReady);
+		
+		playerGuards = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_GUARD_TEAM);
+		playerGuards.setChecked(screen.checkGuards.isChecked());
+		NetworkTransmitter.register(playerGuards);
+		
+		playerThieves = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_THIEF_TEAM);
+		playerThieves.setChecked(screen.checkThieves.isChecked());
+		NetworkTransmitter.register(playerThieves);
 	}
 
 	private void createInvitePlayerListener(MainMenuScreen screen, Skin skin) {
@@ -78,5 +102,42 @@ public class MainMenuController {
 				return false;
 			}
 		});
+	}
+	
+	private void createPlayerReadyListener(MainMenuScreen screen) {
+		screen.checkReady.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				playerReady.setChecked(screen.checkReady.isChecked());
+			}
+		});
+	}
+	
+	private void createPlayerGuardTeamListener(MainMenuScreen screen) {
+		screen.checkGuards.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (screen.checkGuards.isChecked()) {
+					enableCheckReady(screen);
+				}
+				playerGuards.setChecked(screen.checkGuards.isChecked());
+			}
+		});
+	}
+	
+	private void createPlayerThiefTeamListener(MainMenuScreen screen) {
+		screen.checkThieves.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (screen.checkThieves.isChecked()) {
+					enableCheckReady(screen);
+				}
+				playerThieves.setChecked(screen.checkThieves.isChecked());
+			}
+		});
+	}
+
+	private void enableCheckReady(MainMenuScreen screen) {
+		screen.checkReady.setDisabled(false);
 	}
 }
