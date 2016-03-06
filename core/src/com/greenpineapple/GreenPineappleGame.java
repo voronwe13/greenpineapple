@@ -20,7 +20,8 @@ public class GreenPineappleGame extends Game {
 		NetworkReceiver.createServer();
 		Players.createPlayer(Local.getIPAddress());
 
-		map = new Map("MapTest.txt");
+		//map = new Map("MapTest.txt");
+		map = new Map("smallmap.txt");
 		
 		setScreen(new MainMenuScreen(this));
 	}
