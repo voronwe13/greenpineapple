@@ -3,14 +3,30 @@ package com.greenpineapple.net.primitive;
 import java.util.Objects;
 
 import com.greenpineapple.net.NetworkObject;
+import com.greenpineapple.net.NetworkObjectDescription;
 
 public class NetworkString implements NetworkObject {
 	private static final long serialVersionUID = 1L;
 
+	private final String source;
+	private final NetworkObjectDescription description;
+	
 	private boolean disposed = false;
-
 	private String message = "";
 
+	public NetworkString(String source, NetworkObjectDescription description) {
+		this.source = Objects.requireNonNull(source);
+		this.description = Objects.requireNonNull(description);
+	}
+	
+	public String getSource() {
+		return source;
+	}
+	
+	public NetworkObjectDescription getDescription() {
+		return description;
+	}
+	
 	public String getMessage() {
 		return message;
 	}

@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 public class ClientPlayerRow extends HorizontalGroup {
 
-	@SuppressWarnings("unused")
 	private ClientPlayerController controller;
 	Label labelPlayerName; // Also used for status.
 	TextField textIPAddress;
@@ -39,5 +38,9 @@ public class ClientPlayerRow extends HorizontalGroup {
 	
 	public void dispose() {
 		controller = null;
+	}
+	
+	ClientPlayerController getController() {
+		return controller;
 	}
 }

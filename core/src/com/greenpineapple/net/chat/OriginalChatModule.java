@@ -30,8 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class OriginalChatModule extends ApplicationAdapter {
 	private OrthographicCamera camera;
@@ -43,7 +41,6 @@ public class OriginalChatModule extends ApplicationAdapter {
     private TextButton button;
     private TextArea textIPAddress;
     private TextArea textMessage;
-    private Viewport viewport;
     
     // Pick a resolution that is 16:9 but not unreadibly small
     public final static float VIRTUAL_SCREEN_HEIGHT = 960;

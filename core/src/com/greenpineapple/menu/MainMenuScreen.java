@@ -23,8 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.greenpineapple.GreenPineappleGame;
 
@@ -37,14 +37,15 @@ public class MainMenuScreen implements Screen {
 
 	private VerticalGroup rows;
 	private HorizontalGroup invitePlayerRow;
-	private List<ClientPlayerRow> clientPlayerRows = new ArrayList<>();
 	
-	@SuppressWarnings("unused")
 	private MainMenuController mainMenuController;
 	TextButton buttonInvitePlayer;
 	TextButton buttonPlay;
+	TextField textPlayerName;
 
 	public MainMenuScreen(Game game) {
+		String ipAddress = getIPAddress();
+		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
 		stage = new Stage();
@@ -57,7 +58,7 @@ public class MainMenuScreen implements Screen {
 		rows.setBounds(0, 0, GreenPineappleGame.SCREEN_WIDTH, GreenPineappleGame.SCREEN_HEIGHT);
 
 		rows.addActor(createTitleRow(skin));
-		rows.addActor(createHostPlayerRow(skin));
+		rows.addActor(createHostPlayerRow(skin, ipAddress));
 		rows.addActor(createInvitePlayerRow(skin));
 		rows.addActor(new Label("", skin));
 		rows.addActor(createPlayRow(skin));
@@ -68,7 +69,7 @@ public class MainMenuScreen implements Screen {
 		stage.getCamera().viewportHeight = GreenPineappleGame.SCREEN_HEIGHT;
 		stage.getCamera().position.set(GreenPineappleGame.SCREEN_WIDTH / 2, GreenPineappleGame.SCREEN_HEIGHT / 2, 0);
 
-		mainMenuController = new MainMenuController(this, skin, game);
+		mainMenuController = new MainMenuController(this, skin, game, ipAddress);
 	}
 
 	@Override
@@ -77,6 +78,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		mainMenuController.checkNetwork();
+		
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
@@ -104,25 +107,25 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		mainMenuController = null;
-		clientPlayerRows.forEach(row -> row.dispose());
+		mainMenuController.dispose();
 	}
 	
-	void addClientPlayerRow(Skin skin) {
+	ClientPlayerController addClientPlayerRow(Skin skin) {
 		ClientPlayerRow playerRow = new ClientPlayerRow(skin);
 		rows.addActorBefore(invitePlayerRow, playerRow);
-		clientPlayerRows.add(playerRow);
+		return playerRow.getController();
 	}
 
 	private Actor createTitleRow(Skin skin) {
 		return new Label("Operation: Green Pineapple", skin);
 	}
 
-	private Actor createHostPlayerRow(Skin skin) {
+	private Actor createHostPlayerRow(Skin skin, String ipAddress) {
 		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
 		columns.addActor(new CheckBox(" Ready?", skin));
-		columns.addActor(new TextArea("Player One", skin));
-		columns.addActor(new Label(getIPAddress(), skin));
+		textPlayerName = new TextField("Player One", skin);
+		columns.addActor(textPlayerName);
+		columns.addActor(new Label(ipAddress, skin));
 
 		CheckBox checkGuards = new CheckBox(" Guards", skin);
 		CheckBox checkThieves = new CheckBox(" Thieves", skin);

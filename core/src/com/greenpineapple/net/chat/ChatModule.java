@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.greenpineapple.net.NetworkObject;
+import com.greenpineapple.net.NetworkObjectDescription;
 import com.greenpineapple.net.NetworkReceiver;
 import com.greenpineapple.net.NetworkTransmitter;
 import com.greenpineapple.net.primitive.NetworkString;
@@ -50,7 +51,7 @@ public class ChatModule extends ApplicationAdapter {
 	public final static float VIRTUAL_SCREEN_WIDTH = 540;
 
 	private Queue<String> chatRoomMessages = new ConcurrentLinkedQueue<>();
-	private NetworkString messageToNetwork = new NetworkString();
+	private NetworkString messageToNetwork = new NetworkString("", NetworkObjectDescription.PLAYER_NAME);
 
 	@Override
 	public void create() {
