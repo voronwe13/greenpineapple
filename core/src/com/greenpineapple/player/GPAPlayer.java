@@ -18,28 +18,32 @@ public class GPAPlayer {
 	private TextureRegion[][] spriteframes;
 	private Animation animationleft, animationright, animationup, animationdown, currentanimation;
 	private Rectangle playerrect;
-	
+
 	private PlayerController playerController;
-	
+
 	public GPAPlayer(PlayerController playerController) {
 		this.playerController = playerController;
 		playerrect = new Rectangle();
 	}
 
+	public Rectangle getPlayerHitBox() {
+		return playerrect;
+	}
+	
+	public boolean isGuard() {
+		return playerController.isPlayerGuardTeam();
+	}
+	
+	public boolean isThief() {
+		return playerController.isPlayerThiefTeam();
+	}
+	
 	public int getPositionX() {
 		return playerController.getPlayerPhysicalState().positionx;
 	}
 
-	public void setPositionX(int positionx) {
-		playerController.getPlayerPhysicalState().positionx = positionx;
-	}
-
 	public int getPositionY() {
 		return playerController.getPlayerPhysicalState().positiony;
-	}
-
-	public void setPositionY(int positiony) {
-		playerController.getPlayerPhysicalState().positiony = positiony;
 	}
 
 	public void setPosition(int x, int y) {
@@ -50,50 +54,48 @@ public class GPAPlayer {
 	public void moveLeft() {
 		movingx -= speedx;
 		playerController.getPlayerPhysicalState().facingdirection.x -= 1;
-		if (movingx < 0)
+		if (movingx < 0) {
 			currentanimation = animationleft;
+		}
 	}
 
 	public void moveUp() {
 		movingy += speedy;
 		playerController.getPlayerPhysicalState().facingdirection.y += 1;
-		if (movingy > 0)
+		if (movingy > 0) {
 			currentanimation = animationup;
+		}
 	}
 
 	public void moveRight() {
 		movingx += speedx;
 		playerController.getPlayerPhysicalState().facingdirection.x += 1;
-		if (movingx > 0)
+		if (movingx > 0) {
 			currentanimation = animationright;
+		}
 	}
 
 	public void moveDown() {
 		movingy -= speedy;
 		playerController.getPlayerPhysicalState().facingdirection.y -= 1;
-		if (movingy < 0)
+		if (movingy < 0) {
 			currentanimation = animationdown;
+		}
 	}
 
 	public void update(Map map) {
 		playerrect.x = playerController.getPlayerPhysicalState().positionx + movingx;
-		if (!map.checkCollision(playerrect))
+		if (!map.checkCollision(playerrect)) {
 			playerController.getPlayerPhysicalState().positionx += movingx;
-		else
+		} else {
 			playerrect.x = playerController.getPlayerPhysicalState().positionx;
+		}
 		playerrect.y = playerController.getPlayerPhysicalState().positiony + movingy;
-		if (!map.checkCollision(playerrect))
+		if (!map.checkCollision(playerrect)) {
 			playerController.getPlayerPhysicalState().positiony += movingy;
-		else
+		} else {
 			playerrect.y = playerController.getPlayerPhysicalState().positiony;
-	}
-
-	public void stopY() {
-		movingy = 0;
-	}
-
-	public void stopX() {
-		movingx = 0;
+		}
 	}
 
 	public void setTexture(String string) {
@@ -125,17 +127,17 @@ public class GPAPlayer {
 		if (movingx == 0 && movingy == 0) {
 			statetime = 0;
 		}
-		if(playerController.getPlayerPhysicalState().facingdirection.x > 0){
+		if (playerController.getPlayerPhysicalState().facingdirection.x > 0) {
 			currentanimation = animationright;
-		} else if(playerController.getPlayerPhysicalState().facingdirection.x < 0){
+		} else if (playerController.getPlayerPhysicalState().facingdirection.x < 0) {
 			currentanimation = animationleft;
 		}
-		if(playerController.getPlayerPhysicalState().facingdirection.y > 0){
+		if (playerController.getPlayerPhysicalState().facingdirection.y > 0) {
 			currentanimation = animationup;
-		} else if(playerController.getPlayerPhysicalState().facingdirection.y < 0){
+		} else if (playerController.getPlayerPhysicalState().facingdirection.y < 0) {
 			currentanimation = animationdown;
 		}
-		
+
 		return currentanimation.getKeyFrame(statetime, true);
 	}
 

@@ -2,6 +2,7 @@ package com.greenpineapple.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -60,6 +61,22 @@ public class GameScreen implements Screen {
 		for (GPAPlayer player : players) {
 			player.update(map);
 		}
+
+		List<GPAPlayer> guards = players.parallelStream().filter(player -> player.isGuard())
+				.collect(Collectors.toList());
+		List<GPAPlayer> thieves = players.parallelStream().filter(player -> player.isThief())
+				.collect(Collectors.toList());
+
+		for (GPAPlayer thief : thieves) {
+			if (guards.parallelStream().anyMatch(guard -> thief.getPlayerHitBox().overlaps(guard.getPlayerHitBox()))) {
+				players.remove(thief);
+				Gdx.app.log("Game Event", "A thief was caught!");
+			}
+		}
+
+		players.parallelStream().filter(player -> player.isThief())
+				.forEach(player -> players.parallelStream().filter(otherPlayer -> otherPlayer.isGuard())
+						.anyMatch(otherPlayer -> player.getPlayerHitBox().overlaps(otherPlayer.getPlayerHitBox())));
 
 		lighting.preRender(delta);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
