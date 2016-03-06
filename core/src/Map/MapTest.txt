@@ -1,8 +1,0 @@
-guard: (0,0) (1,2) (15,15)
-robber: (0,1) (20,20)
-treasure: (000,333)
-wallChar: w
-floorChar: -
-robberChar: r
-guardChar: g
-treasureChar: t

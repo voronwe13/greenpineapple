@@ -39,6 +39,7 @@ public class MapClass {
 	}
 	
 	private ArrayList<Vector2> guardPositions = new ArrayList<Vector2>(); //Guard Positions
+
 	//private int numGuard = 0;
 	private ArrayList<Vector2> robberPositions = new ArrayList<Vector2>(); //robber Positions
 	//private int numRobber = 0;
@@ -145,5 +146,17 @@ public class MapClass {
 	public Texture getImage() {
 		// TODO Auto-generated method stub
 		return mapimage;
+	}
+	
+	public ArrayList<Vector2> getGuardPositions() {
+		return guardPositions;
+	}
+
+	public ArrayList<Vector2> getRobberPositions() {
+		return robberPositions;
+	}
+
+	public ArrayList<Vector2> getTreasurePositions() {
+		return treasurePositions;
 	}
 }
