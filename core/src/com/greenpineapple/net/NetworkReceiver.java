@@ -15,7 +15,6 @@ import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
-import com.greenpineapple.net.primitive.NetworkString;
 
 public class NetworkReceiver {
 
@@ -83,9 +82,7 @@ public class NetworkReceiver {
 		try (ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()))) {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
-					NetworkString data = (NetworkString) inputStream.readObject();
-					System.out.println(data.getMessage());
-					networkObjects.add(data);
+					networkObjects.add((NetworkObject) inputStream.readObject());
 				} catch (EOFException exception) {
 					Gdx.app.error("Network", "A client left?", exception);
 					closeSocket(socket);

@@ -69,10 +69,10 @@ public class NetworkTransmitter {
 				try {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
-						System.out.println("transmitting data to client " + clientSocket.getSocket().getRemoteAddress());
 						outputStream.writeObject(object);
-						outputStream.flush();
 					}
+					outputStream.flush();
+					outputStream.reset();
 				} catch (IOException exception) {
 					Gdx.app.error("Network", "Failure sending data to client!", exception);
 				}
