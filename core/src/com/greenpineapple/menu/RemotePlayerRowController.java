@@ -29,7 +29,7 @@ public class RemotePlayerRowController {
 			row.labelPlayerName.setText("Unable to connect to client at " + row.textIPAddress.getText());
 		} else {
 			row.labelPlayerName.setText("Connected!");
-			Players.getPlayer(row.textIPAddress.getText());
+			Players.createPlayer(row.textIPAddress.getText());
 		}
 	}
 }
