@@ -77,7 +77,7 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
@@ -120,12 +120,12 @@ public class MainMenuScreen implements Screen {
 
 	private Actor createHostPlayerRow(Skin skin) {
 		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
-		columns.addActor(new CheckBox("Ready?", skin));
+		columns.addActor(new CheckBox(" Ready?", skin));
 		columns.addActor(new TextArea("Player One", skin));
 		columns.addActor(new Label(getIPAddress(), skin));
 
-		CheckBox checkGuards = new CheckBox("Guards", skin);
-		CheckBox checkThieves = new CheckBox("Thieves", skin);
+		CheckBox checkGuards = new CheckBox(" Guards", skin);
+		CheckBox checkThieves = new CheckBox(" Thieves", skin);
 
 		columns.addActor(checkGuards);
 		columns.addActor(checkThieves);

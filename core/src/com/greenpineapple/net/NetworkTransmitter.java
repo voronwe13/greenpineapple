@@ -25,7 +25,7 @@ public class NetworkTransmitter {
 	 *            cannot be null
 	 * @param port
 	 */
-	public static void addClient(String address) {
+	public static boolean addClient(String address) {
 		Objects.requireNonNull(address);
 
 		SocketHints socketHints = new SocketHints();
@@ -36,12 +36,13 @@ public class NetworkTransmitter {
 		}
 		catch (GdxRuntimeException exception) {
 			Gdx.app.error("Network", "Couldn't connect to client at " + address, exception);
-			return;
+			return false;
 		}
 
 		synchronized (CLIENT_SOCKET_LOCK) {
 			clientSockets.add(clientSocket);
 		}
+		return true;
 	}
 
 	/**
