@@ -121,6 +121,7 @@ public class MainMenuController {
 					enableCheckReady(screen);
 				}
 				playerGuards.setChecked(screen.checkGuards.isChecked());
+				playerThieves.setChecked(screen.checkThieves.isChecked());
 			}
 		});
 	}
@@ -132,6 +133,7 @@ public class MainMenuController {
 				if (screen.checkThieves.isChecked()) {
 					enableCheckReady(screen);
 				}
+				playerGuards.setChecked(screen.checkGuards.isChecked());
 				playerThieves.setChecked(screen.checkThieves.isChecked());
 			}
 		});
