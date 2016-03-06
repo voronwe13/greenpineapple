@@ -22,17 +22,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.greenpineapple.GreenPineappleGame;
 import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.player.GPAPlayer;
 import com.greenpineapple.player.PlayerType;
 
 public class GameScreen implements Screen {
 
-	private static final int RAYS_NUM = 100;
-	private RayHandler rayhandler;
-	private ConeLight conelight;
-	private World world;
-	private OrthographicCamera cam;
 	private String[] lines;
 
 	private SpriteBatch batch;
@@ -46,6 +42,8 @@ public class GameScreen implements Screen {
     float statetime;
     
     MapClass map;
+	private PointLight pointlight2;
+	private GPALighting lighting;
 	
     public GameScreen(Game game) {
 		batch = new SpriteBatch();
@@ -81,15 +79,8 @@ public class GameScreen implements Screen {
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();
 		inputProcessor.setPlayer(guardplayers.get(0));
 		Gdx.input.setInputProcessor(inputProcessor);
-		world = new World(new Vector2(), true);
-		RayHandler.useDiffuseLight(true);
-		rayhandler = new RayHandler(world);
-		rayhandler.setCulling(true);
-		//rayhandler.setCombinedMatrix(gameController.camera.combined);
-		rayhandler.setAmbientLight(1);
-		rayhandler.setShadows(false);
-		conelight = new ConeLight(rayhandler, RAYS_NUM, new Color(.1f,.1f,.5f,.5f), 5f, 20, 20, 20, 20);
-
+		lighting = GPALighting.getInstance();
+		lighting.initialize();
 		statetime = 0f;
 	}
     
@@ -107,9 +98,10 @@ public class GameScreen implements Screen {
 		for(GPAPlayer robberplayer:robberplayers){
 			robberplayer.update();
 		}
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+		lighting.preRender(delta);
 		statetime += Gdx.graphics.getDeltaTime();
         mapimage = map.getImage();
+        batch.setProjectionMatrix(lighting.getCamera().combined);
         batch.begin();
         batch.draw(mapimage, 0, 0);
 		for(GPAPlayer guardplayer:guardplayers){
@@ -121,17 +113,13 @@ public class GameScreen implements Screen {
 			batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
 		}
 		batch.end();
-		rayhandler.setCombinedMatrix(cam);
-		rayhandler.updateAndRender();
+		lighting.postRender();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		cam = new OrthographicCamera(20.0f, 20.0f * height / width);
-		cam.position.set(cam.viewportWidth / 2.0f, cam.viewportHeight / 2.0f, 0.0f);
-		cam.update();
-		
+		lighting.resize(width, height);
+
 	}
 
 	@Override
