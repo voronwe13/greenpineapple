@@ -10,8 +10,8 @@ public class GreenPineappleGame extends Game {
 	
 	@Override
 	public void create() {
-		//setScreen(new MainMenuScreen(this));
-		setScreen(new GameScreen(this));
+		setScreen(new MainMenuScreen(this));
+//		setScreen(new GameScreen(this));
 	}
 
 }
