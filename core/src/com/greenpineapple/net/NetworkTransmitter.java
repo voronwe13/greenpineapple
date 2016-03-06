@@ -74,7 +74,6 @@ public class NetworkTransmitter {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
 						if (clientSocket.updateChangeMap(object)) {
-							System.out.println("writing object: " + object);
 							outputStream.writeObject(object);
 						}
 					}

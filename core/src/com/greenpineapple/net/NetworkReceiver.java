@@ -82,9 +82,7 @@ public class NetworkReceiver {
 		try (ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()))) {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
-					NetworkObject networkObject = (NetworkObject) inputStream.readObject();
-					System.out.println("received " + networkObject);
-					networkObjects.add(networkObject);
+					networkObjects.add((NetworkObject) inputStream.readObject());
 				} catch (EOFException exception) {
 					Gdx.app.error("Network", "A client left?", exception);
 					closeSocket(socket);
