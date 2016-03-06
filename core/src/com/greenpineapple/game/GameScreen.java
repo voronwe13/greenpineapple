@@ -16,7 +16,6 @@ import com.greenpineapple.map.Treasure;
 import com.greenpineapple.player.GPAPlayer;
 import com.greenpineapple.player.LocalPlayerController;
 import com.greenpineapple.player.PlayerController;
-import com.greenpineapple.player.PlayerType;
 import com.greenpineapple.player.Players;
 
 public class GameScreen implements Screen {
@@ -53,7 +52,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -64,8 +62,7 @@ public class GameScreen implements Screen {
 		}
 
 		lighting.preRender(delta);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears
-													// the screen.
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		statetime += Gdx.graphics.getDeltaTime();
 		batch.setProjectionMatrix(lighting.getCamera().combined);
@@ -108,14 +105,14 @@ public class GameScreen implements Screen {
 		for (PlayerController playerController : Players.getAllPlayers()) {
 			GPAPlayer player;
 			if (playerController.isPlayerGuardTeam()) {
-				player = new GPAPlayer(PlayerType.GUARD);
+				player = new GPAPlayer(playerController.getPlayerPhysicalState());
 				player.setTexture("Guard Sprite polished small.png");
 				int posx = (int) guardPosition.x;
 				int posy = (int) guardPosition.y;
 				player.setPosition(posx, posy);
 				players.add(player);
 			} else if (playerController.isPlayerThiefTeam()) {
-				player = new GPAPlayer(PlayerType.ROBBER);
+				player = new GPAPlayer(playerController.getPlayerPhysicalState());
 				player.setTexture("Thief Sprite polished small.png");
 				int posx = (int) thiefPosition.x;
 				int posy = (int) thiefPosition.y;
@@ -125,7 +122,7 @@ public class GameScreen implements Screen {
 				Gdx.app.error("Player", "Player " + playerController.getPlayerName() + " has no team!");
 				continue;
 			}
-			
+
 			if (playerController instanceof LocalPlayerController) {
 				GPAInputProcessor inputProcessor = new GPAInputProcessor();
 				inputProcessor.setPlayer(player);

@@ -14,79 +14,78 @@ public class GPAPlayer {
 	private static final int FRAME_ROWS = 4;
 
 	private int speedx = 3, speedy = 3;
-	private PhysicalState status;
+	private PhysicalState physicalState;
 	private int movingx = 0, movingy = 0;
 	private Texture spritesheet;
 	private TextureRegion[][] spriteframes;
 	private Animation animationleft, animationright, animationup, animationdown, currentanimation;
 	private Rectangle playerrect;
-
-	public GPAPlayer(PlayerType playertype) {
-		super();
-		status = new PhysicalState("", NetworkObjectDescription.PLAYER_PHYSICAL_STATE);
+	
+	public GPAPlayer(PhysicalState physicalState) {
+		this.physicalState = physicalState;
 		playerrect = new Rectangle();
 	}
 
 	public int getPositionX() {
-		return status.positionx;
+		return physicalState.positionx;
 	}
 
 	public void setPositionX(int positionx) {
-		status.positionx = positionx;
+		physicalState.positionx = positionx;
 	}
 
 	public int getPositionY() {
-		return status.positiony;
+		return physicalState.positiony;
 	}
 
 	public void setPositionY(int positiony) {
-		status.positiony = positiony;
+		physicalState.positiony = positiony;
 	}
 
 	public void setPosition(int x, int y) {
-		status.positionx = x;
-		status.positiony = y;
+		physicalState.positionx = x;
+		physicalState.positiony = y;
 	}
 
 	public void moveLeft() {
 		movingx -= speedx;
-		status.facingdirection.x -= 1;
+		physicalState.facingdirection.x -= 1;
 		if (movingx < 0)
 			currentanimation = animationleft;
 	}
 
 	public void moveUp() {
 		movingy += speedy;
-		status.facingdirection.y += 1;
+		physicalState.facingdirection.y += 1;
 		if (movingy > 0)
 			currentanimation = animationup;
 	}
 
 	public void moveRight() {
 		movingx += speedx;
-		status.facingdirection.x += 1;
+		physicalState.facingdirection.x += 1;
 		if (movingx > 0)
 			currentanimation = animationright;
 	}
 
 	public void moveDown() {
 		movingy -= speedy;
-		status.facingdirection.y -= 1;
+		physicalState.facingdirection.y -= 1;
 		if (movingy < 0)
 			currentanimation = animationdown;
 	}
 
 	public void update(Map map) {
-		playerrect.x = status.positionx + movingx;
+		playerrect.x = physicalState.positionx + movingx;
 		if (!map.checkCollision(playerrect))
-			status.positionx += movingx;
+			physicalState.positionx += movingx;
 		else
-			playerrect.x = status.positionx;
-		playerrect.y = status.positiony + movingy;
+			playerrect.x = physicalState.positionx;
+		playerrect.y = physicalState.positiony + movingy;
 		if (!map.checkCollision(playerrect))
-			status.positiony += movingy;
+			physicalState.positiony += movingy;
 		else
-			playerrect.y = status.positiony;
+			playerrect.y = physicalState.positiony;
 	}
 
 	public void stopY() {
