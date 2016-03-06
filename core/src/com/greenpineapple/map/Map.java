@@ -14,6 +14,8 @@ import com.greenpineapple.GreenPineappleGame;
 public class Map {
 
 	private int gridsize = 32; // width of map gridsquares
+	
+	private int mapwidth, mapheight;
 
 	public enum MapItems {
 		WALL, FLOOR, GUARD, ROBBER, TREASURE
@@ -29,7 +31,7 @@ public class Map {
 			rectangle.width = gridsize;
 			rectangle.height = gridsize;
 			rectangle.x = gridx * gridsize;
-			rectangle.y = GreenPineappleGame.SCREEN_HEIGHT - gridy * gridsize - gridsize;
+			rectangle.y = mapheight - gridy * gridsize - gridsize;
 
 		}
 	}
@@ -73,13 +75,13 @@ public class Map {
 			// this.lines = lines;
 			// System.out.println(lines);
 			map = new GridSquare[lines.length][lines[0].length()];
-			int mapwidth = gridsize * map[0].length;
-			int mapheight = gridsize * map.length;
+			mapwidth = gridsize * map[0].length;
+			mapheight = gridsize * map.length;
 			mapimage = new Texture(mapwidth, mapheight, Format.RGB888);
-			for (int i = 0; i < lines.length; i++) {
+			for (int i = 0; i < map.length; i++) {
 				char[] chars = lines[i].toCharArray();
 
-				for (int j = 0; j < chars.length; j++) {
+				for (int j = 0; j < map[0].length; j++) {
 					switch (chars[j]) {
 					case 'w':
 						map[i][j] = new GridSquare(MapItems.WALL, j, i);

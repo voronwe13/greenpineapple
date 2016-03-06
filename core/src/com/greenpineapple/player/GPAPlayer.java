@@ -125,7 +125,17 @@ public class GPAPlayer {
 		if (movingx == 0 && movingy == 0) {
 			statetime = 0;
 		}
-
+		if(playerController.getPlayerPhysicalState().facingdirection.x > 0){
+			currentanimation = animationright;
+		} else if(playerController.getPlayerPhysicalState().facingdirection.x < 0){
+			currentanimation = animationleft;
+		}
+		if(playerController.getPlayerPhysicalState().facingdirection.y > 0){
+			currentanimation = animationup;
+		} else if(playerController.getPlayerPhysicalState().facingdirection.y < 0){
+			currentanimation = animationdown;
+		}
+		
 		return currentanimation.getKeyFrame(statetime, true);
 	}
 
