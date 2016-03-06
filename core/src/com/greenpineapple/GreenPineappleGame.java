@@ -1,6 +1,8 @@
 package com.greenpineapple;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.greenpineapple.map.Map;
 import com.greenpineapple.menu.MainMenuScreen;
 import com.greenpineapple.net.Local;
@@ -17,6 +19,8 @@ public class GreenPineappleGame extends Game {
 	
 	@Override
 	public void create() {
+		Gdx.app.setLogLevel(Application.LOG_INFO);
+		
 		NetworkReceiver.createServer();
 		Players.createPlayer(Local.getIPAddress());
 
