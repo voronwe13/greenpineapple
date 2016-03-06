@@ -14,6 +14,7 @@ import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.map.Map;
 import com.greenpineapple.map.Treasure;
 import com.greenpineapple.player.GPAPlayer;
+import com.greenpineapple.player.LocalPlayerController;
 import com.greenpineapple.player.PlayerController;
 import com.greenpineapple.player.PlayerType;
 import com.greenpineapple.player.Players;
@@ -43,9 +44,7 @@ public class GameScreen implements Screen {
 			Treasure treasure = new Treasure(treasureposition);
 			treasures.add(treasure);
 		}
-		GPAInputProcessor inputProcessor = new GPAInputProcessor();
-		inputProcessor.setPlayer(players.get(0));
-		Gdx.input.setInputProcessor(inputProcessor);
+
 		lighting = GPALighting.getInstance();
 		lighting.initialize();
 
@@ -107,22 +106,30 @@ public class GameScreen implements Screen {
 		Vector2 thiefPosition = map.getRobberPositions().get(0);
 
 		for (PlayerController playerController : Players.getAllPlayers()) {
+			GPAPlayer player;
 			if (playerController.isPlayerGuardTeam()) {
-				GPAPlayer guardplayer = new GPAPlayer(PlayerType.GUARD);
-				guardplayer.setTexture("Guard Sprite polished small.png");
+				player = new GPAPlayer(PlayerType.GUARD);
+				player.setTexture("Guard Sprite polished small.png");
 				int posx = (int) guardPosition.x;
 				int posy = (int) guardPosition.y;
-				guardplayer.setPosition(posx, posy);
-				players.add(guardplayer);
+				player.setPosition(posx, posy);
+				players.add(player);
 			} else if (playerController.isPlayerThiefTeam()) {
-				GPAPlayer robberplayer = new GPAPlayer(PlayerType.ROBBER);
-				robberplayer.setTexture("Thief Sprite polished small.png");
+				player = new GPAPlayer(PlayerType.ROBBER);
+				player.setTexture("Thief Sprite polished small.png");
 				int posx = (int) thiefPosition.x;
 				int posy = (int) thiefPosition.y;
-				robberplayer.setPosition(posx, posy);
-				players.add(robberplayer);
+				player.setPosition(posx, posy);
+				players.add(player);
 			} else {
 				Gdx.app.error("Player", "Player " + playerController.getPlayerName() + " has no team!");
+				continue;
+			}
+			
+			if (playerController instanceof LocalPlayerController) {
+				GPAInputProcessor inputProcessor = new GPAInputProcessor();
+				inputProcessor.setPlayer(player);
+				Gdx.input.setInputProcessor(inputProcessor);
 			}
 		}
 	}
