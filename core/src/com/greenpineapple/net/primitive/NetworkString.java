@@ -59,4 +59,9 @@ public class NetworkString implements NetworkObject {
 	public int hashCode() {
 		return Objects.hash(source, description, disposed, message);
 	}
+	
+	@Override
+	public String toString() {
+		return source + "-" + description + ": "+ message;
+	}
 }
