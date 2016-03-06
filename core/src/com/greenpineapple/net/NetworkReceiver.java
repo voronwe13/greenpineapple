@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -84,10 +85,10 @@ public class NetworkReceiver {
 					networkObjects.add((NetworkObject) inputStream.readObject());
 				} catch (EOFException exception) {
 					Gdx.app.error("Network", "A client left?", exception);
-					threads.remove(Thread.currentThread());
-					Thread.currentThread().interrupt();
-					sockets.remove(socket);
-					socket.dispose();
+					closeSocket(socket);
+				} catch (SocketException exception) {
+					Gdx.app.error("Network", "A client left?", exception);
+					closeSocket(socket);
 				} catch (ClassNotFoundException exception) {
 					Gdx.app.error("Network", "Unrecognized data type from server!", exception);
 				}
@@ -96,5 +97,12 @@ public class NetworkReceiver {
 		} catch (IOException exception) {
 			Gdx.app.error("Network", "Failure receiving data from server!", exception);
 		}
+	}
+
+	private static void closeSocket(Socket socket) {
+		threads.remove(Thread.currentThread());
+		Thread.currentThread().interrupt();
+		sockets.remove(socket);
+		socket.dispose();
 	}
 }

@@ -69,6 +69,7 @@ public class NetworkTransmitter {
 				try {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
+						System.out.println("transmitting data to client " + clientSocket.getSocket().getRemoteAddress());
 						outputStream.writeObject(object);
 					}
 				} catch (IOException exception) {
