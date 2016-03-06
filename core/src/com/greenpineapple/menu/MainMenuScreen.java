@@ -1,15 +1,5 @@
 package com.greenpineapple.menu;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.greenpineapple.GreenPineappleGame;
+import com.greenpineapple.net.Local;
 
 public class MainMenuScreen implements Screen {
 	public static final float PAD = 5f;
@@ -38,7 +29,6 @@ public class MainMenuScreen implements Screen {
 	private VerticalGroup rows;
 	private HorizontalGroup invitePlayerRow;
 	
-	private MainMenuController mainMenuController;
 	TextButton buttonInvitePlayer;
 	TextButton buttonPlay;
 	TextField textPlayerName;
@@ -47,7 +37,7 @@ public class MainMenuScreen implements Screen {
 	CheckBox checkThieves;
 
 	public MainMenuScreen(Game game) {
-		String ipAddress = getIPAddress();
+		String ipAddress = Local.getIPAddress();
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
@@ -61,7 +51,7 @@ public class MainMenuScreen implements Screen {
 		rows.setBounds(0, 0, GreenPineappleGame.SCREEN_WIDTH, GreenPineappleGame.SCREEN_HEIGHT);
 
 		rows.addActor(createTitleRow(skin));
-		rows.addActor(createHostPlayerRow(skin, ipAddress));
+		rows.addActor(createLocalPlayerRow(skin, ipAddress));
 		rows.addActor(createInvitePlayerRow(skin));
 		rows.addActor(new Label("", skin));
 		rows.addActor(createPlayRow(skin));
@@ -72,7 +62,7 @@ public class MainMenuScreen implements Screen {
 		stage.getCamera().viewportHeight = GreenPineappleGame.SCREEN_HEIGHT;
 		stage.getCamera().position.set(GreenPineappleGame.SCREEN_WIDTH / 2, GreenPineappleGame.SCREEN_HEIGHT / 2, 0);
 
-		mainMenuController = new MainMenuController(this, skin, game, ipAddress);
+		new MainMenuController(this, skin, game, ipAddress);
 	}
 
 	@Override
@@ -81,8 +71,6 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		mainMenuController.checkNetwork();
-		
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
@@ -110,20 +98,19 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		mainMenuController.dispose();
 	}
 	
-	ClientPlayerController addClientPlayerRow(Skin skin) {
-		ClientPlayerRow playerRow = new ClientPlayerRow(skin);
+	RemotePlayerRow addRemotePlayerRow(Skin skin) {
+		RemotePlayerRow playerRow = new RemotePlayerRow(skin);
 		rows.addActorBefore(invitePlayerRow, playerRow);
-		return playerRow.getController();
+		return playerRow;
 	}
 
 	private Actor createTitleRow(Skin skin) {
 		return new Label("Operation: Green Pineapple", skin);
 	}
 
-	private Actor createHostPlayerRow(Skin skin, String ipAddress) {
+	private Actor createLocalPlayerRow(Skin skin, String ipAddress) {
 		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
 		checkReady = new CheckBox(" Ready?", skin);
 		checkReady.setDisabled(true);
@@ -157,29 +144,4 @@ public class MainMenuScreen implements Screen {
 		columns.addActor(buttonPlay);
 		return columns;
 	}
-
-	private String getIPAddress() {
-		List<String> addresses = new ArrayList<String>();
-		try {
-			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-			for (NetworkInterface ni : Collections.list(interfaces)) {
-				for (InetAddress address : Collections.list(ni.getInetAddresses())) {
-					if (address instanceof Inet4Address) {
-						addresses.add(address.getHostAddress());
-					}
-				}
-			}
-		} catch (SocketException exception) {
-			Gdx.app.error("Network", "Couldn't find local IP address!", exception);
-		}
-
-		String ipAddress = null;
-		try {
-			ipAddress = addresses.stream().filter(address -> address.startsWith("192")).findAny().get();
-		} catch (NoSuchElementException exception) {
-			Gdx.app.error("Network", "Couldn't find local IP address!", exception);
-		}
-		return ipAddress;
-	}
-
 }

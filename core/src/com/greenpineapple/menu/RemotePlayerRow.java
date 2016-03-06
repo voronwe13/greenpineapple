@@ -5,17 +5,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.greenpineapple.player.PlayerController;
+import com.greenpineapple.player.Players;
 
-public class ClientPlayerRow extends HorizontalGroup {
+public class RemotePlayerRow extends HorizontalGroup {
 
-	private ClientPlayerController controller;
-	CheckBox checkReady;
+	private CheckBox checkReady;
 	Label labelPlayerName; // Also used for status.
 	TextField textIPAddress;
-	CheckBox checkGuards;
-	CheckBox checkThieves;
+	private CheckBox checkGuards;
+	private CheckBox checkThieves;
 
-	public ClientPlayerRow(Skin skin) {
+	public RemotePlayerRow(Skin skin) {
 		space(MainMenuScreen.PAD * 5);
 		pad(MainMenuScreen.PAD);
 		fill();
@@ -36,14 +37,16 @@ public class ClientPlayerRow extends HorizontalGroup {
 		addActor(checkGuards);
 		addActor(checkThieves);
 
-		controller = new ClientPlayerController(this);
+		new RemotePlayerRowController(this);
 	}
 
-	public void dispose() {
-		controller = null;
-	}
-
-	ClientPlayerController getController() {
-		return controller;
+	public void render() {
+		if (Players.hasPlayer(textIPAddress.getText())) {
+			PlayerController player = Players.getPlayer(textIPAddress.getText());
+			labelPlayerName.setText(player.getPlayerName());
+			checkReady.setChecked(player.isPlayerReady());
+			checkGuards.setChecked(player.isPlayerGuardTeam());
+			checkThieves.setChecked(player.isPlayerThiefTeam());
+		}
 	}
 }

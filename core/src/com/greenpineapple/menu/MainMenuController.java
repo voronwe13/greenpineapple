@@ -1,8 +1,6 @@
 package com.greenpineapple.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,82 +8,29 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.greenpineapple.game.GameScreen;
-import com.greenpineapple.net.NetworkObject;
-import com.greenpineapple.net.NetworkObjectDescription;
-import com.greenpineapple.net.NetworkReceiver;
-import com.greenpineapple.net.NetworkTransmitter;
-import com.greenpineapple.net.primitive.NetworkBoolean;
-import com.greenpineapple.net.primitive.NetworkString;
+import com.greenpineapple.player.Players;
 
 public class MainMenuController {
 
-	private NetworkString playerName;
-	private NetworkBoolean playerReady;
-	private NetworkBoolean playerGuards;
-	private NetworkBoolean playerThieves;
-
-	private List<ClientPlayerController> controllers = new ArrayList<>();
-	private List<NetworkObject> unclaimedNetworkObjects = new ArrayList<>();
-
 	public MainMenuController(MainMenuScreen screen, Skin skin, Game game, String ipAddress) {
-		registerNetworkObjects(screen, ipAddress);
+		Objects.requireNonNull(screen);
+		Objects.requireNonNull(skin);
+		Objects.requireNonNull(game);
+		Objects.requireNonNull(ipAddress);
 
 		createInvitePlayerListener(screen, skin);
 		createPlayButtonListener(screen, game);
-		createPlayerNameListener(screen);
-		createPlayerReadyListener(screen);
-		createPlayerGuardTeamListener(screen);
-		createPlayerThiefTeamListener(screen);
-	}
-
-	public void dispose() {
-		playerName.dispose();
-		playerReady.dispose();
-		playerGuards.dispose();
-		playerThieves.dispose();
-		controllers.forEach(controller -> controller.dispose());
-		controllers.clear();
-	}
-
-	public void checkNetwork() {
-		List<NetworkObject> networkObjects = new ArrayList<>(unclaimedNetworkObjects);
-		networkObjects.addAll(NetworkReceiver.retrieveUpdates());
-		
-		unclaimedNetworkObjects.clear();
-		for (NetworkObject networkObject : networkObjects) {
-			Optional<ClientPlayerController> matchingController = controllers.parallelStream()
-					.filter(controller -> controller.getSource().equals(networkObject.getSource())).findAny();
-			if (matchingController.isPresent()) {
-				matchingController.get().actOn(networkObject);
-			} else {
-				unclaimedNetworkObjects.add(networkObject);
-			}
-		}
-	}
-
-	private void registerNetworkObjects(MainMenuScreen screen, String ipAddress) {
-		playerName = new NetworkString(ipAddress, NetworkObjectDescription.PLAYER_NAME);
-		playerName.setMessage(screen.textPlayerName.getText());
-		NetworkTransmitter.register(playerName);
-		
-		playerReady = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_READY);
-		playerReady.setChecked(screen.checkReady.isChecked());
-		NetworkTransmitter.register(playerReady);
-		
-		playerGuards = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_GUARD_TEAM);
-		playerGuards.setChecked(screen.checkGuards.isChecked());
-		NetworkTransmitter.register(playerGuards);
-		
-		playerThieves = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_THIEF_TEAM);
-		playerThieves.setChecked(screen.checkThieves.isChecked());
-		NetworkTransmitter.register(playerThieves);
+		createPlayerNameListener(screen, ipAddress);
+		createPlayerReadyListener(screen, ipAddress);
+		createPlayerGuardTeamListener(screen, ipAddress);
+		createPlayerThiefTeamListener(screen, ipAddress);
 	}
 
 	private void createInvitePlayerListener(MainMenuScreen screen, Skin skin) {
 		screen.buttonInvitePlayer.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controllers.add(screen.addClientPlayerRow(skin));
+				screen.addRemotePlayerRow(skin);
 			}
 		});
 	}
@@ -100,49 +45,49 @@ public class MainMenuController {
 		});
 	}
 
-	private void createPlayerNameListener(MainMenuScreen screen) {
+	private void createPlayerNameListener(MainMenuScreen screen, String ipAddress) {
 		screen.textPlayerName.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
 				if (character == '\r' || character == '\n') {
-					playerName.setMessage(screen.textPlayerName.getText());
+					Players.getPlayer(ipAddress).setPlayerName(screen.textPlayerName.getText());
 				}
 				return false;
 			}
 		});
 	}
-	
-	private void createPlayerReadyListener(MainMenuScreen screen) {
+
+	private void createPlayerReadyListener(MainMenuScreen screen, String ipAddress) {
 		screen.checkReady.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				playerReady.setChecked(screen.checkReady.isChecked());
+				Players.getPlayer(ipAddress).setPlayerReady(screen.checkReady.isChecked());
 			}
 		});
 	}
-	
-	private void createPlayerGuardTeamListener(MainMenuScreen screen) {
+
+	private void createPlayerGuardTeamListener(MainMenuScreen screen, String ipAddress) {
 		screen.checkGuards.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (screen.checkGuards.isChecked()) {
 					enableCheckReady(screen);
 				}
-				playerGuards.setChecked(screen.checkGuards.isChecked());
-				playerThieves.setChecked(screen.checkThieves.isChecked());
+				Players.getPlayer(ipAddress).setPlayerGuardTeam(screen.checkGuards.isChecked());
+				Players.getPlayer(ipAddress).setPlayerThiefTeam(screen.checkThieves.isChecked());
 			}
 		});
 	}
-	
-	private void createPlayerThiefTeamListener(MainMenuScreen screen) {
+
+	private void createPlayerThiefTeamListener(MainMenuScreen screen, String ipAddress) {
 		screen.checkThieves.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (screen.checkThieves.isChecked()) {
 					enableCheckReady(screen);
 				}
-				playerGuards.setChecked(screen.checkGuards.isChecked());
-				playerThieves.setChecked(screen.checkThieves.isChecked());
+				Players.getPlayer(ipAddress).setPlayerGuardTeam(screen.checkGuards.isChecked());
+				Players.getPlayer(ipAddress).setPlayerThiefTeam(screen.checkThieves.isChecked());
 			}
 		});
 	}

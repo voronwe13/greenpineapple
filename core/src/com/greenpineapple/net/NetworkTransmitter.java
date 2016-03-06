@@ -3,9 +3,6 @@ package com.greenpineapple.net;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.SocketException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -28,6 +25,7 @@ public class NetworkTransmitter {
 	 * @param address
 	 *            cannot be null
 	 * @param port
+	 * @return true if the connection is successful
 	 */
 	public static boolean addClient(String address) {
 		Objects.requireNonNull(address);
@@ -73,7 +71,7 @@ public class NetworkTransmitter {
 				try {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
-						if (clientSocket.updateChangeMap(object)) {
+						if (clientSocket.getChangeMap().updateChangeMap(object)) {
 							outputStream.writeObject(object);
 						}
 					}
@@ -122,8 +120,8 @@ public class NetworkTransmitter {
 	private static class SocketData {
 		private final Socket socket;
 		private final ObjectOutputStream outputStream;
-		private final Map<String, Map<NetworkObjectDescription, Integer>> changeMap = new HashMap<>();
-
+		private final ChangeMap changeMap = new ChangeMap();
+		
 		public SocketData(Socket socket) throws IOException {
 			this.socket = socket;
 			this.outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -137,23 +135,8 @@ public class NetworkTransmitter {
 			return outputStream;
 		}
 
-		/**
-		 * Note: this relies on the network objects hash code!
-		 * @param object
-		 * @return true and updates the change map if the object is not already
-		 *         present in the map, or if the object is present in the map
-		 *         but not equal to the map's version of the object.
-		 */
-		public boolean updateChangeMap(NetworkObject object) {
-			if (Integer.valueOf(object.hashCode()).equals(
-					changeMap.getOrDefault(object.getSource(), Collections.emptyMap()).get(object.getDescription()))) {
-				return false;
-			}
-			if (!changeMap.containsKey(object.getSource())) {
-				changeMap.put(object.getSource(), new HashMap<>());
-			}
-			changeMap.get(object.getSource()).put(object.getDescription(), object.hashCode());
-			return true;
+		public ChangeMap getChangeMap() {
+			return changeMap;
 		}
 	}
 }
