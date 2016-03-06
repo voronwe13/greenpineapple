@@ -68,6 +68,10 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(lighting.getCamera().combined);
 		batch.begin();
 		batch.draw(map.getImage(), 0, 0);
+//		for (Treasure treasure: treasures){
+//			TextureRegion treasureFrame = treasure.getCurrentFrame(statetime);
+//			batch.draw(treasureFrame, treasure.getPositionX(), treasure.getPositionY());			
+//		}
 		for (GPAPlayer player : players) {
 			TextureRegion playerCurrentFrame = player.getCurrentFrame(statetime);
 			batch.draw(playerCurrentFrame, player.getPositionX(), player.getPositionY());
