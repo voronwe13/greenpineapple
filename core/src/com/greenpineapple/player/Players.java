@@ -1,6 +1,8 @@
 package com.greenpineapple.player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import com.greenpineapple.net.Local;
@@ -45,6 +47,13 @@ public class Players {
 		return getPlayer(ipAddress);
 	}
 
+	/**
+	 * @return a list of all the players
+	 */
+	public static List<PlayerController> getAllPlayers() {
+		return new ArrayList<>(players.values());
+	}
+	
 	private static PlayerController createPlayerObject(String ipAddress) {
 		if (ipAddress.equals(Local.getIPAddress())) {
 			return new LocalPlayerController(ipAddress);
@@ -54,5 +63,5 @@ public class Players {
 			return playerController;
 		}
 	}
-
+	
 }

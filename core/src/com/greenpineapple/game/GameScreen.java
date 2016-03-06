@@ -14,14 +14,16 @@ import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.map.Map;
 import com.greenpineapple.map.Treasure;
 import com.greenpineapple.player.GPAPlayer;
+import com.greenpineapple.player.PlayerController;
 import com.greenpineapple.player.PlayerType;
+import com.greenpineapple.player.Players;
 
 public class GameScreen implements Screen {
 	private SpriteBatch batch;
 
-	private List<GPAPlayer> players = new ArrayList<>();;
+	private List<GPAPlayer> players = new ArrayList<>();
 
-	private List<Treasure> treasures;
+	private List<Treasure> treasures = new ArrayList<>();
 
 	float statetime;
 
@@ -33,26 +35,10 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		map = game.getMap();
 
-		List<Vector2> guardpositions = map.getGuardPositions();
-		List<Vector2> robberpositions = map.getRobberPositions();
+		addPlayers(map);
+
 		List<Vector2> treasurepositions = map.getTreasurePositions();
-		treasures = new ArrayList<Treasure>();
-		for (int i = 0; i < guardpositions.size(); i++) {
-			GPAPlayer guardplayer = new GPAPlayer(PlayerType.GUARD);
-			guardplayer.setTexture("Guard Sprite polished small.png");
-			int posx = (int) guardpositions.get(i).x;
-			int posy = (int) guardpositions.get(i).y;
-			guardplayer.setPosition(posx, posy);
-			players.add(guardplayer);
-		}
-		for (int i = 0; i < robberpositions.size(); i++) {
-			GPAPlayer robberplayer = new GPAPlayer(PlayerType.ROBBER);
-			robberplayer.setTexture("Thief Sprite polished small.png");
-			int posx = (int) robberpositions.get(i).x;
-			int posy = (int) robberpositions.get(i).y;
-			robberplayer.setPosition(posx, posy);
-			players.add(robberplayer);
-		}
+
 		for (Vector2 treasureposition : treasurepositions) {
 			Treasure treasure = new Treasure(treasureposition);
 			treasures.add(treasure);
@@ -102,26 +88,43 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+	}
 
+	private void addPlayers(Map map) {
+		Vector2 guardPosition = map.getGuardPositions().get(0);
+		Vector2 thiefPosition = map.getRobberPositions().get(0);
+
+		for (PlayerController playerController : Players.getAllPlayers()) {
+			if (playerController.isPlayerGuardTeam()) {
+				GPAPlayer guardplayer = new GPAPlayer(PlayerType.GUARD);
+				guardplayer.setTexture("Guard Sprite polished small.png");
+				int posx = (int) guardPosition.x;
+				int posy = (int) guardPosition.y;
+				guardplayer.setPosition(posx, posy);
+				players.add(guardplayer);
+			} else if (playerController.isPlayerThiefTeam()) {
+				GPAPlayer robberplayer = new GPAPlayer(PlayerType.ROBBER);
+				robberplayer.setTexture("Thief Sprite polished small.png");
+				int posx = (int) thiefPosition.x;
+				int posy = (int) thiefPosition.y;
+				robberplayer.setPosition(posx, posy);
+				players.add(robberplayer);
+			} else {
+				Gdx.app.error("Player", "Player " + playerController.getPlayerName() + " has no team!");
+			}
+		}
 	}
 
 }
