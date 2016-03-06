@@ -123,7 +123,7 @@ public class NetworkTransmitter {
 	private static class SocketData {
 		private final Socket socket;
 		private final ObjectOutputStream outputStream;
-		private final Map<String, Map<NetworkObjectDescription, NetworkObject>> changeMap = new HashMap<>();
+		private final Map<String, Map<NetworkObjectDescription, Integer>> changeMap = new HashMap<>();
 
 		public SocketData(Socket socket) throws IOException {
 			this.socket = socket;
@@ -139,20 +139,21 @@ public class NetworkTransmitter {
 		}
 
 		/**
+		 * Note: this relies on the network objects hash code!
 		 * @param object
 		 * @return true and updates the change map if the object is not already
 		 *         present in the map, or if the object is present in the map
 		 *         but not equal to the map's version of the object.
 		 */
 		public boolean updateChangeMap(NetworkObject object) {
-			if (object.equals(
+			if (Integer.valueOf(object.hashCode()).equals(
 					changeMap.getOrDefault(object.getSource(), Collections.emptyMap()).get(object.getDescription()))) {
 				return false;
 			}
 			if (!changeMap.containsKey(object.getSource())) {
 				changeMap.put(object.getSource(), new HashMap<>());
 			}
-			changeMap.get(object.getSource()).put(object.getDescription(), object);
+			changeMap.get(object.getSource()).put(object.getDescription(), object.hashCode());
 			return true;
 		}
 	}
