@@ -2,6 +2,9 @@ package com.greenpineapple.net;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -69,7 +72,9 @@ public class NetworkTransmitter {
 				try {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
-						outputStream.writeObject(object);
+						if (clientSocket.updateChangeMap(object)) {
+							outputStream.writeObject(object);
+						}
 					}
 					outputStream.flush();
 					outputStream.reset();
@@ -108,6 +113,7 @@ public class NetworkTransmitter {
 	private static class SocketData {
 		private final Socket socket;
 		private final ObjectOutputStream outputStream;
+		private final Map<String, Map<NetworkObjectDescription, NetworkObject>> changeMap = new HashMap<>();
 
 		public SocketData(Socket socket) throws IOException {
 			this.socket = socket;
@@ -120,6 +126,24 @@ public class NetworkTransmitter {
 
 		public ObjectOutputStream getOutputStream() {
 			return outputStream;
+		}
+
+		/**
+		 * @param object
+		 * @return true and updates the change map if the object is not already
+		 *         present in the map, or if the object is present in the map
+		 *         but not equal to the map's version of the object.
+		 */
+		public boolean updateChangeMap(NetworkObject object) {
+			if (object.equals(
+					changeMap.getOrDefault(object.getSource(), Collections.emptyMap()).get(object.getDescription()))) {
+				return false;
+			}
+			if (!changeMap.containsKey(object.getSource())) {
+				changeMap.put(object.getSource(), new HashMap<>());
+			}
+			changeMap.get(object.getSource()).put(object.getDescription(), object);
+			return true;
 		}
 	}
 }
