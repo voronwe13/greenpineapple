@@ -35,6 +35,7 @@ public class Treasure {
 		treasurerect = new Rectangle();
 		treasurerect.width = spriteframes[0][0].getRegionWidth();
 		treasurerect.height = spriteframes[0][0].getRegionHeight();
+		treasurerect.setPosition(position);
 		currentanimation = new Animation(0.025f, spriteframes[0]);
 		
 	}
@@ -53,6 +54,8 @@ public class Treasure {
 
 	public TextureRegion getCurrentFrame(float statetime) {
 		// TODO Auto-generated method stub
+		if(captured)
+			return null;
 		return currentanimation.getKeyFrame(statetime, true);
 	}
 

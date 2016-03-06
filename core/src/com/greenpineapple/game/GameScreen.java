@@ -72,6 +72,17 @@ public class GameScreen implements Screen {
 				players.remove(thief);
 				Gdx.app.log("Game Event", "A thief was caught!");
 			}
+			
+		}
+		
+		for(Treasure treasure: treasures){
+			for (GPAPlayer thief : thieves) {
+				if(!treasure.isCaptured() && treasure.checkCollision(thief.getPlayerHitBox())){
+					treasure.capture();
+					Gdx.app.log("Game Event", "A thief found treasure!");
+					
+				}
+			}
 		}
 
 		players.parallelStream().filter(player -> player.isThief())
