@@ -10,7 +10,7 @@ public class NetworkString implements NetworkObject {
 
 	private final String source;
 	private final NetworkObjectDescription description;
-	
+
 	private boolean disposed = false;
 	private String message = "";
 
@@ -18,15 +18,15 @@ public class NetworkString implements NetworkObject {
 		this.source = Objects.requireNonNull(source);
 		this.description = Objects.requireNonNull(description);
 	}
-	
+
 	public String getSource() {
 		return source;
 	}
-	
+
 	public NetworkObjectDescription getDescription() {
 		return description;
 	}
-	
+
 	public String getMessage() {
 		return message;
 	}
@@ -51,11 +51,12 @@ public class NetworkString implements NetworkObject {
 			return false;
 		}
 		NetworkString that = (NetworkString) object;
-		return Objects.equals(this.disposed, that.disposed) && Objects.equals(this.message, that.message);
+		return Objects.equals(this.source, that.source) && Objects.equals(this.description, that.description)
+				&& Objects.equals(this.disposed, that.disposed) && Objects.equals(this.message, that.message);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(disposed, message);
+		return Objects.hash(source, description, disposed, message);
 	}
 }

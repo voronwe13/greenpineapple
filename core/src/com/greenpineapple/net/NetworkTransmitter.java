@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class NetworkTransmitter {
 	private static final Object CLIENT_SOCKET_LOCK = new Object();
-	private static Queue<Socket> clientSockets = new ConcurrentLinkedQueue<>();
+	private static Queue<SocketData> clientSockets = new ConcurrentLinkedQueue<>();
 
 	private static Queue<NetworkObject> networkObjects = new ConcurrentLinkedQueue<>();
 
@@ -30,17 +30,20 @@ public class NetworkTransmitter {
 
 		SocketHints socketHints = new SocketHints();
 		socketHints.connectTimeout = NetworkConstants.CONNECTION_TIMEOUT;
-		Socket clientSocket; 
+		Socket clientSocket;
 		try {
 			clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, NetworkConstants.PORT, socketHints);
-		}
-		catch (GdxRuntimeException exception) {
+		} catch (GdxRuntimeException exception) {
 			Gdx.app.error("Network", "Couldn't connect to client at " + address, exception);
 			return false;
 		}
 
-		synchronized (CLIENT_SOCKET_LOCK) {
-			clientSockets.add(clientSocket);
+		try {
+			synchronized (CLIENT_SOCKET_LOCK) {
+				clientSockets.add(new SocketData(clientSocket));
+			}
+		} catch (IOException exception) {
+			Gdx.app.error("Network", "Error creating the socket data for a client socket", exception);
 		}
 		return true;
 	}
@@ -62,9 +65,9 @@ public class NetworkTransmitter {
 	 */
 	public static void transmit() {
 		synchronized (CLIENT_SOCKET_LOCK) {
-			for (Socket clientSocket : clientSockets) {
+			for (SocketData clientSocket : clientSockets) {
 				try {
-					ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
 						outputStream.writeObject(object);
 					}
@@ -73,7 +76,7 @@ public class NetworkTransmitter {
 				}
 			}
 		}
-		
+
 		for (NetworkObject object : networkObjects) {
 			if (object.isDisposed()) {
 				networkObjects.remove(object);
@@ -87,11 +90,34 @@ public class NetworkTransmitter {
 	 */
 	public static void dispose() {
 		synchronized (CLIENT_SOCKET_LOCK) {
-			for (Socket clientSocket : clientSockets) {
-				clientSocket.dispose();
+			for (SocketData clientSocket : clientSockets) {
+				clientSocket.getSocket().dispose();
+				try {
+					clientSocket.getOutputStream().close();
+				} catch (IOException exception) {
+					Gdx.app.error("Network", "Error closing output stream", exception);
+				}
 			}
 			clientSockets.clear();
 		}
 		networkObjects.clear();
+	}
+
+	private static class SocketData {
+		private final Socket socket;
+		private final ObjectOutputStream outputStream;
+
+		public SocketData(Socket socket) throws IOException {
+			this.socket = socket;
+			this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+		}
+
+		public Socket getSocket() {
+			return socket;
+		}
+
+		public ObjectOutputStream getOutputStream() {
+			return outputStream;
+		}
 	}
 }
