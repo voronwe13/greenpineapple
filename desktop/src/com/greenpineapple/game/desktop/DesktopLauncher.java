@@ -11,8 +11,8 @@ public class DesktopLauncher {
 		config.title = "Green Pineapple";
 		config.width = GreenPineappleGame.SCREEN_WIDTH;
 		config.height = GreenPineappleGame.SCREEN_HEIGHT;
-//		new LwjglApplication(new ChatModule(), config);
+		new LwjglApplication(new ChatModule(), config);
 //		new LwjglApplication(new OriginalChatModule(), config);
-		new LwjglApplication(new GreenPineappleGame(), config);
+//		new LwjglApplication(new GreenPineappleGame(), config);
 	}
 }
