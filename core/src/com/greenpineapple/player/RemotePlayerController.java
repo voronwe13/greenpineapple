@@ -37,6 +37,9 @@ public class RemotePlayerController extends PlayerController implements NetworkL
 		case PLAYER_THIEF_TEAM:
 			setPlayerThiefTeam(((NetworkBoolean) object).isChecked());
 			break;
+		case PLAYER_PHYSICAL_STATE:
+			setPlayerPhysicalState((PhysicalState) object);
+			break;
 		default:
 			Gdx.app.error("Controller",
 					"RemotePlayerController doesn't recognize this object's description: " + object);

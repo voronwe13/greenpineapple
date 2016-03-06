@@ -30,6 +30,9 @@ public class LocalPlayerController extends PlayerController {
 		playerThiefTeam = new NetworkBoolean(ipAddress, NetworkObjectDescription.PLAYER_THIEF_TEAM);
 		setPlayerThiefTeam(false);
 		NetworkTransmitter.register(playerThiefTeam);
+		
+		setPlayerPhysicalState(new PhysicalState(ipAddress, NetworkObjectDescription.PLAYER_PHYSICAL_STATE));
+		NetworkTransmitter.register(getPlayerPhysicalState());
 	}
 
 	public void dispose() {
@@ -37,6 +40,7 @@ public class LocalPlayerController extends PlayerController {
 		playerReady.dispose();
 		playerGuardTeam.dispose();
 		playerThiefTeam.dispose();
+		getPlayerPhysicalState().dispose();
 	}
 
 	@Override
@@ -51,14 +55,25 @@ public class LocalPlayerController extends PlayerController {
 		this.playerReady.setChecked(playerReady);
 	}
 
+	@Override
 	public void setPlayerGuardTeam(boolean playerGuardTeam) {
 		super.setPlayerGuardTeam(playerGuardTeam);
 		this.playerGuardTeam.setChecked(playerGuardTeam);
 	}
 
+	@Override
 	public void setPlayerThiefTeam(boolean playerThiefTeam) {
 		super.setPlayerThiefTeam(playerThiefTeam);
 		this.playerThiefTeam.setChecked(playerThiefTeam);
+	}
+	
+	@Override
+	public void setPlayerPhysicalState(PhysicalState playerPhysicalState) {
+		if (!getPlayerPhysicalState().equals(playerPhysicalState)) {
+			getPlayerPhysicalState().dispose();
+			NetworkTransmitter.register(playerPhysicalState);
+		}
+		super.setPlayerPhysicalState(playerPhysicalState);
 	}
 
 }

@@ -2,6 +2,8 @@ package com.greenpineapple.player;
 
 import java.util.Objects;
 
+import com.greenpineapple.net.NetworkObjectDescription;
+
 /**
  * Tracks the state of a player in the game.
  */
@@ -12,13 +14,13 @@ public abstract class PlayerController {
 	private boolean playerReady;
 	private boolean playerGuardTeam;
 	private boolean playerThiefTeam;
-	
-	private PhysicalState playerPhysicalState;
-	
+
+	private PhysicalState playerPhysicalState = new PhysicalState("", NetworkObjectDescription.PLAYER_PHYSICAL_STATE);
+
 	PlayerController(String ipAddress) {
 		this.ipAddress = Objects.requireNonNull(ipAddress);
 	}
-	
+
 	public String getIPAddress() {
 		return ipAddress;
 	}
