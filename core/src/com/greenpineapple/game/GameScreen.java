@@ -5,23 +5,34 @@ import java.util.List;
 
 import Map.MapClass;
 import Map.Treasure;
+import box2dLight.ConeLight;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.player.GPAPlayer;
 import com.greenpineapple.player.PlayerType;
 
 public class GameScreen implements Screen {
 
+	private static final int RAYS_NUM = 100;
+	private RayHandler rayhandler;
+	private ConeLight conelight;
+	private World world;
+	private OrthographicCamera cam;
 	private String[] lines;
 
 	private SpriteBatch batch;
@@ -70,7 +81,16 @@ public class GameScreen implements Screen {
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();
 		inputProcessor.setPlayer(guardplayers.get(0));
 		Gdx.input.setInputProcessor(inputProcessor);
-        statetime = 0f;
+		world = new World(new Vector2(), true);
+		RayHandler.useDiffuseLight(true);
+		rayhandler = new RayHandler(world);
+		rayhandler.setCulling(true);
+		//rayhandler.setCombinedMatrix(gameController.camera.combined);
+		rayhandler.setAmbientLight(1);
+		rayhandler.setShadows(false);
+		conelight = new ConeLight(rayhandler, RAYS_NUM, new Color(.1f,.1f,.5f,.5f), 5f, 20, 20, 20, 20);
+
+		statetime = 0f;
 	}
     
 	@Override
@@ -100,12 +120,17 @@ public class GameScreen implements Screen {
 	        robbercurrentframe = robberplayer.getCurrentFrame(statetime);
 			batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
 		}
-		batch.end();	
+		batch.end();
+		rayhandler.setCombinedMatrix(cam);
+		rayhandler.updateAndRender();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
+		cam = new OrthographicCamera(20.0f, 20.0f * height / width);
+		cam.position.set(cam.viewportWidth / 2.0f, cam.viewportHeight / 2.0f, 0.0f);
+		cam.update();
 		
 	}
 
