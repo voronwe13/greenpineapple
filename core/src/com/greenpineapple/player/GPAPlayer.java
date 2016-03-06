@@ -1,23 +1,21 @@
 package com.greenpineapple.player;
 
-import java.io.Serializable;
-
-import Map.MapClass;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.greenpineapple.GreenPineappleGame;
+import com.greenpineapple.net.NetworkObjectDescription;
 
-public class GPAPlayer implements Serializable {
+import Map.MapClass;
+
+public class GPAPlayer {
 
     private static final int FRAME_COLS = 8;
     private static final int FRAME_ROWS = 4;
 	
 	private int speedx = 3, speedy = 3;
-	private PlayerStatus status;
+	private PhysicalState status;
 	private int movingx = 0, movingy = 0;
 	private Texture spritesheet;
 	private TextureRegion[][] spriteframes;
@@ -27,7 +25,7 @@ public class GPAPlayer implements Serializable {
 	
 	public GPAPlayer(PlayerType playertype) {
 		super();
-		status = new PlayerStatus();
+		status = new PhysicalState("", NetworkObjectDescription.PLAYER_PHYSICAL_STATE);
 		playerrect = new Rectangle();
 	}
 	

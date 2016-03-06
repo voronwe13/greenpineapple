@@ -2,8 +2,6 @@ package com.greenpineapple.player;
 
 import java.util.Objects;
 
-import com.greenpineapple.Controller;
-
 /**
  * Tracks the state of a player in the game.
  */
@@ -14,7 +12,9 @@ public abstract class PlayerController {
 	private boolean playerReady;
 	private boolean playerGuardTeam;
 	private boolean playerThiefTeam;
-
+	
+	private PhysicalState playerPhysicalState;
+	
 	PlayerController(String ipAddress) {
 		this.ipAddress = Objects.requireNonNull(ipAddress);
 	}
@@ -53,5 +53,13 @@ public abstract class PlayerController {
 
 	public void setPlayerThiefTeam(boolean playerThiefTeam) {
 		this.playerThiefTeam = playerThiefTeam;
+	}
+
+	public PhysicalState getPlayerPhysicalState() {
+		return playerPhysicalState;
+	}
+
+	public void setPlayerPhysicalState(PhysicalState playerPhysicalState) {
+		this.playerPhysicalState = playerPhysicalState;
 	}
 }
