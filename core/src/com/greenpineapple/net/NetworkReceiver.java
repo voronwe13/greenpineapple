@@ -72,6 +72,8 @@ public class NetworkReceiver {
 
 		while (!Thread.currentThread().isInterrupted()) {
 			Socket socket = serverSocket.accept(null);
+			Gdx.app.log("Network", "Receiving from " + socket.getRemoteAddress());
+
 			sockets.add(socket);
 
 			threads.add(createThread(() -> receiveUpdates(socket)));
@@ -82,7 +84,9 @@ public class NetworkReceiver {
 		try (ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()))) {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
-					networkObjects.add((NetworkObject) inputStream.readObject());
+					NetworkObject networkObject = (NetworkObject) inputStream.readObject();
+					Gdx.app.log("Network", "Receiving object " + networkObject);
+					networkObjects.add(networkObject);
 				} catch (EOFException exception) {
 					Gdx.app.error("Network", "A client left?", exception);
 					closeSocket(socket);

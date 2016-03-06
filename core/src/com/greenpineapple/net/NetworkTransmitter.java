@@ -35,6 +35,7 @@ public class NetworkTransmitter {
 		Socket clientSocket;
 		try {
 			clientSocket = Gdx.net.newClientSocket(Protocol.TCP, address, NetworkConstants.PORT, socketHints);
+			Gdx.app.log("Network", "Transmitting to " + clientSocket.getRemoteAddress());
 		} catch (GdxRuntimeException exception) {
 			Gdx.app.error("Network", "Couldn't connect to client at " + address, exception);
 			return false;
@@ -72,6 +73,7 @@ public class NetworkTransmitter {
 					ObjectOutputStream outputStream = clientSocket.getOutputStream();
 					for (NetworkObject object : networkObjects) {
 						if (clientSocket.getChangeMap().updateChangeMap(object)) {
+							Gdx.app.log("Network", "Transmitting object " + object);
 							outputStream.writeObject(object);
 						}
 					}
