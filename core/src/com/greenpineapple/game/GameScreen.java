@@ -1,6 +1,10 @@
 package com.greenpineapple.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Map.MapClass;
+import Map.Treasure;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -11,16 +15,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.greenpineapple.input.GPAInputProcessor;
 import com.greenpineapple.player.GPAPlayer;
+import com.greenpineapple.player.PlayerType;
 
 public class GameScreen implements Screen {
 
 	private String[] lines;
 
 	private SpriteBatch batch;
-	private GPAPlayer guardplayer, robberplayer;
-
+	//private GPAPlayer guardplayer, robberplayer;
+	private List<GPAPlayer> guardplayers, robberplayers;
+	private List<Treasure> treasures;
 	
     private Texture mapimage;
     private TextureRegion   guardcurrentframe, robbercurrentframe;
@@ -31,22 +38,38 @@ public class GameScreen implements Screen {
 	
     public GameScreen(Game game) {
 		batch = new SpriteBatch();
-		guardplayer = new GPAPlayer();
-		robberplayer = new GPAPlayer();
-		guardplayer.setTexture("BlueSpriteSheetsmall.png");
-		robberplayer.setTexture("RedSpriteSheetsmall.png");
-		guardplayer.setPosition(64,64);
-		robberplayer.setPosition(300,300);
-		GPAInputProcessor inputProcessor = new GPAInputProcessor();
-		inputProcessor.setPlayer(guardplayer);
-		Gdx.input.setInputProcessor(inputProcessor);
-//		FileHandle file = Gdx.files.internal("MapTest.txt");
-//		String text = file.readString();
-//		lines = text.split("\n");
-//		System.out.println(lines.toString());
 		map = new MapClass();
-		guardplayer.setMap(map);
-		robberplayer.setMap(map);
+		List<Vector2> guardpositions = map.getGuardPositions();
+		List<Vector2> robberpositions = map.getRobberPositions();
+		List<Vector2> treasurepositions = map.getTreasurePositions();
+		guardplayers = new ArrayList<GPAPlayer>();
+		robberplayers = new ArrayList<GPAPlayer>();
+		treasures = new ArrayList<Treasure>();
+		for(int i=0; i<guardpositions.size(); i++){
+			GPAPlayer guardplayer = new GPAPlayer(PlayerType.GUARD);
+			guardplayer.setTexture("Guard Sprite polished small.png");
+			int posx = (int)guardpositions.get(i).x;
+			int posy = (int)guardpositions.get(i).y;
+			guardplayer.setPosition(posx, posy);
+			guardplayer.setMap(map);
+			guardplayers.add(guardplayer);
+		}
+		for(int i=0; i<robberpositions.size(); i++){
+			GPAPlayer robberplayer = new GPAPlayer(PlayerType.ROBBER);
+			robberplayer.setTexture("Thief Sprite polished small.png");
+			int posx = (int)robberpositions.get(i).x;
+			int posy = (int)robberpositions.get(i).y;
+			robberplayer.setPosition(posx, posy);
+			robberplayer.setMap(map);
+			robberplayers.add(robberplayer);
+		}
+		for(Vector2 treasureposition:treasurepositions){
+			Treasure treasure = new Treasure(treasureposition);
+			treasures.add(treasure);
+		}
+		GPAInputProcessor inputProcessor = new GPAInputProcessor();
+		inputProcessor.setPlayer(guardplayers.get(0));
+		Gdx.input.setInputProcessor(inputProcessor);
         statetime = 0f;
 	}
     
@@ -58,18 +81,26 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		guardplayer.update();
-		robberplayer.update();
+		for(GPAPlayer guardplayer:guardplayers){
+			guardplayer.update();
+		}
+		for(GPAPlayer robberplayer:robberplayers){
+			robberplayer.update();
+		}
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
 		statetime += Gdx.graphics.getDeltaTime();
-        guardcurrentframe = guardplayer.getCurrentFrame(statetime);
-        robbercurrentframe = robberplayer.getCurrentFrame(statetime);
         mapimage = map.getImage();
         batch.begin();
         batch.draw(mapimage, 0, 0);
-        batch.draw(guardcurrentframe, guardplayer.getPositionX(), guardplayer.getPositionY());
-        batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
-        batch.end();	
+		for(GPAPlayer guardplayer:guardplayers){
+	        guardcurrentframe = guardplayer.getCurrentFrame(statetime);
+	        batch.draw(guardcurrentframe, guardplayer.getPositionX(), guardplayer.getPositionY());
+		}
+		for(GPAPlayer robberplayer:robberplayers){
+	        robbercurrentframe = robberplayer.getCurrentFrame(statetime);
+			batch.draw(robbercurrentframe, robberplayer.getPositionX(), robberplayer.getPositionY());
+		}
+		batch.end();	
 	}
 
 	@Override

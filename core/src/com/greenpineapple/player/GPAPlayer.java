@@ -16,7 +16,7 @@ public class GPAPlayer implements Serializable {
     private static final int FRAME_COLS = 8;
     private static final int FRAME_ROWS = 4;
 	
-	private int speedx = 5, speedy = 5;
+	private int speedx = 3, speedy = 3;
 	private PlayerStatus status;
 	private int movingx = 0, movingy = 0;
 	private Texture spritesheet;
@@ -25,7 +25,7 @@ public class GPAPlayer implements Serializable {
 	private MapClass map;
 	private Rectangle playerrect;
 	
-	public GPAPlayer() {
+	public GPAPlayer(PlayerType playertype) {
 		super();
 		status = new PlayerStatus();
 		playerrect = new Rectangle();
@@ -104,7 +104,7 @@ public class GPAPlayer implements Serializable {
 	public void setTexture(String string) {
 		spritesheet = new Texture(Gdx.files.internal(string));
         TextureRegion[][] tmp = TextureRegion.split(spritesheet, spritesheet.getWidth()/FRAME_COLS, spritesheet.getHeight()/FRAME_ROWS);              // #10
-        int index = 0;
+        //int index = 0;
         spriteframes = new TextureRegion[FRAME_ROWS][FRAME_COLS];
         for (int i = 0; i < FRAME_ROWS; i++) {
         	for (int j = 0; j < FRAME_COLS; j++) {
