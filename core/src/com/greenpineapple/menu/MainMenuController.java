@@ -40,6 +40,9 @@ public class MainMenuController {
 
 	public void dispose() {
 		playerName.dispose();
+		playerReady.dispose();
+		playerGuards.dispose();
+		playerThieves.dispose();
 		controllers.forEach(controller -> controller.dispose());
 		controllers.clear();
 	}
