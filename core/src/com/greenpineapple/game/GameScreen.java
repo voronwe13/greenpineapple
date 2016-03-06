@@ -19,8 +19,6 @@ public class GameScreen implements Screen {
 	private String[] lines;
 
 	private SpriteBatch batch;
-	private Texture guard; //the guard graphic
-	private Texture robber; //the robber graphic
 	private GPAPlayer guardplayer, robberplayer;
 
 	
@@ -35,8 +33,8 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		guardplayer = new GPAPlayer();
 		robberplayer = new GPAPlayer();
-		guardplayer.setTexture("BlueSpriteSheet.png");
-		robberplayer.setTexture("RedSpriteSheet.png");
+		guardplayer.setTexture("BlueSpriteSheetsmall.png");
+		robberplayer.setTexture("RedSpriteSheetsmall.png");
 		guardplayer.setPosition(64,64);
 		robberplayer.setPosition(300,300);
 		GPAInputProcessor inputProcessor = new GPAInputProcessor();

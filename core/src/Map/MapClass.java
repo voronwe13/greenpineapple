@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.greenpineapple.GreenPineappleGame;
 
 public class MapClass {
 
@@ -32,18 +33,18 @@ public class MapClass {
 			rectangle.width = gridsize;
 			rectangle.height = gridsize;
 			rectangle.x = gridx*gridsize;
-			rectangle.y = gridy*gridsize;
+			rectangle.y = GreenPineappleGame.SCREEN_HEIGHT - gridy*gridsize - gridsize;
 			
 		}
 	}
 	
 	private ArrayList<Vector2> guardPositions = new ArrayList<Vector2>(); //Guard Positions
-	private int numGuard = 0;
+	//private int numGuard = 0;
 	private ArrayList<Vector2> robberPositions = new ArrayList<Vector2>(); //robber Positions
-	private int numRobber = 0;
+	//private int numRobber = 0;
 	
 	private ArrayList<Vector2> treasurePositions = new ArrayList<Vector2>();
-	private int numTreasure = 0;
+	//private int numTreasure = 0;
 	
 	//static Pattern pattern = Pattern.compile("[0-9][0-9]?[0-9]?");
 	//static Pattern spacePattern = Pattern.compile("\n");
@@ -91,12 +92,15 @@ public class MapClass {
 						break;
 						case 'g': map[i][j] = new GridSquare(MapItems.FLOOR, j, i);
 							drawToTexture(i,j,MapItems.FLOOR);
+							guardPositions.add(new Vector2(map[i][j].rectangle.x, map[i][j].rectangle.y));
 						break;
 						case 'r': map[i][j] = new GridSquare(MapItems.FLOOR, j, i);
 							drawToTexture(i,j,MapItems.FLOOR);
+							robberPositions.add(new Vector2(map[i][j].rectangle.x, map[i][j].rectangle.y));
 						break;
 						case 't': map[i][j] = new GridSquare(MapItems.FLOOR, j, i);
 							drawToTexture(i,j,MapItems.FLOOR);
+							treasurePositions.add(new Vector2(map[i][j].rectangle.x, map[i][j].rectangle.y));
 						break;
 						default: map[i][j] = new GridSquare(MapItems.FLOOR, j, i);
 							drawToTexture(i,j,MapItems.FLOOR);
@@ -134,7 +138,7 @@ public class MapClass {
 	
 	private GridSquare getGridSquare(int x, int y){
 		int xcoord = x/gridsize;
-		int ycoord = y/gridsize;
+		int ycoord = map.length - y/gridsize - 1;
 		return map[ycoord][xcoord];
 	}
 
