@@ -29,7 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.greenpineapple.GreenPineappleGame;
 
 public class MainMenuScreen implements Screen {
-	private static final float PAD = 5f;
+	public static final float PAD = 5f;
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -37,7 +37,9 @@ public class MainMenuScreen implements Screen {
 
 	private VerticalGroup rows;
 	private HorizontalGroup invitePlayerRow;
-
+	private List<ClientPlayerRow> clientPlayerRows = new ArrayList<>();
+	
+	@SuppressWarnings("unused")
 	private MainMenuController mainMenuController;
 	TextButton buttonInvitePlayer;
 	TextButton buttonPlay;
@@ -103,11 +105,13 @@ public class MainMenuScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 		mainMenuController = null;
+		clientPlayerRows.forEach(row -> row.dispose());
 	}
 	
 	void addClientPlayerRow(Skin skin) {
-		Actor playerRow = createClientPlayerRow(skin);
+		ClientPlayerRow playerRow = new ClientPlayerRow(skin);
 		rows.addActorBefore(invitePlayerRow, playerRow);
+		clientPlayerRows.add(playerRow);
 	}
 
 	private Actor createTitleRow(Skin skin) {
@@ -143,29 +147,6 @@ public class MainMenuScreen implements Screen {
 		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
 		buttonPlay = new TextButton("Play!", skin);
 		columns.addActor(buttonPlay);
-		return columns;
-	}
-
-	private Actor createClientPlayerRow(Skin skin) {
-		HorizontalGroup columns = new HorizontalGroup().space(PAD * 5).pad(PAD).fill();
-
-		CheckBox checkReady = new CheckBox("Ready?", skin);
-		checkReady.setDisabled(true);
-		columns.addActor(checkReady);
-		columns.addActor(new Label("Enter IP Address", skin));
-		columns.addActor(new TextArea("192.168.1.X", skin));
-
-		CheckBox checkGuards = new CheckBox("Guards", skin);
-		checkGuards.setDisabled(true);
-		CheckBox checkThieves = new CheckBox("Thieves", skin);
-		checkThieves.setDisabled(true);
-
-		columns.addActor(checkGuards);
-		columns.addActor(checkThieves);
-
-		ButtonGroup<CheckBox> buttonGroupTeam = new ButtonGroup<>(checkGuards, checkThieves);
-		buttonGroupTeam.setMaxCheckCount(1);
-
 		return columns;
 	}
 

@@ -1,8 +1,8 @@
 package com.greenpineapple;
 
 import com.badlogic.gdx.Game;
-import com.greenpineapple.game.GameScreen;
 import com.greenpineapple.menu.MainMenuScreen;
+import com.greenpineapple.net.NetworkReceiver;
 
 public class GreenPineappleGame extends Game {
 	public static final int SCREEN_WIDTH = 1024;
@@ -10,8 +10,9 @@ public class GreenPineappleGame extends Game {
 	
 	@Override
 	public void create() {
+		NetworkReceiver.createServer();
+		
 		setScreen(new MainMenuScreen(this));
-//		setScreen(new GameScreen(this));
 	}
 
 }

@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -19,16 +18,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.greenpineapple.net.NetworkObject;
 import com.greenpineapple.net.NetworkReceiver;
 import com.greenpineapple.net.NetworkTransmitter;
+import com.greenpineapple.net.primitive.NetworkString;
 
 public class ChatModule extends ApplicationAdapter {
 	private OrthographicCamera camera;
@@ -39,17 +41,17 @@ public class ChatModule extends ApplicationAdapter {
 	private TextArea textPeers;
 	private TextButton buttonSetPeers;
 	private Label labelChatRoom;
-	private TextArea textMessage;
+	private TextField textMessage;
 	private TextButton buttonSendMessage;
 	private Label labelDebug;
-	
+
 	// Pick a resolution that is 16:9 but not unreadibly small
 	public final static float VIRTUAL_SCREEN_HEIGHT = 960;
 	public final static float VIRTUAL_SCREEN_WIDTH = 540;
 
 	private Queue<String> chatRoomMessages = new ConcurrentLinkedQueue<>();
 	private NetworkString messageToNetwork = new NetworkString();
-	
+
 	@Override
 	public void create() {
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -135,7 +137,7 @@ public class ChatModule extends ApplicationAdapter {
 		createSetPeersEvent();
 
 		// Setup event to send message.
-		createSendMessageEvent();
+		createSendMessageEvents();
 	}
 
 	@Override
@@ -148,9 +150,9 @@ public class ChatModule extends ApplicationAdapter {
 	@Override
 	public void render() {
 		receiveNetworkMessages();
-		
+
 		displayMessages();
-		
+
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
@@ -164,39 +166,52 @@ public class ChatModule extends ApplicationAdapter {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				NetworkTransmitter.dispose();
-				
+
 				String[] networkAddresses = textPeers.getText().split(";");
 				for (String networkAddress : networkAddresses) {
 					NetworkTransmitter.addClient(networkAddress);
 				}
-				
+
 				NetworkTransmitter.register(messageToNetwork);
 			}
 		});
 	}
 
-	private void createSendMessageEvent() {
+	private void createSendMessageEvents() {
 		buttonSendMessage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				String message = textMessage.getText();
-				chatRoomMessages.add(message);
-				textMessage.setText("");
-				
-				messageToNetwork.setMessage(message);
-				NetworkTransmitter.transmit();
+				sendMessage();
+			}
+		});
+		textMessage.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				if (character == '\r' || character == '\n') {
+					sendMessage();
+				}
+				return false;
 			}
 		});
 	}
-	
+
+	private void sendMessage() {
+		String message = textMessage.getText();
+		chatRoomMessages.add(message);
+		textMessage.setText("");
+
+		messageToNetwork.setMessage(message);
+		NetworkTransmitter.transmit();
+	}
+
 	private void receiveNetworkMessages() {
 		List<NetworkObject> networkObjects = NetworkReceiver.retrieveUpdates();
-		
+
 		for (NetworkObject networkObject : networkObjects) {
-			chatRoomMessages.add(((NetworkString) networkObject).getMessage()); 
+			chatRoomMessages.add(((NetworkString) networkObject).getMessage());
 		}
 	}
-	
+
 	private void displayMessages() {
 		while (chatRoomMessages.size() > 10) {
 			chatRoomMessages.poll();
@@ -207,45 +222,5 @@ public class ChatModule extends ApplicationAdapter {
 			builder.append("\n");
 		}
 		labelChatRoom.setText(builder.toString());
-	}
-	
-	private static class NetworkString implements NetworkObject {
-		private static final long serialVersionUID = 1L;
-
-		private boolean disposed = false;
-
-		private String message = "";
-		
-		public String getMessage() {
-			return message;
-		}
-		
-		public void setMessage(String message) {
-			this.message = message;
-		}
-		
-		@Override
-		public void dispose() {
-			disposed = true;
-		}
-
-		@Override
-		public boolean isDisposed() {
-			return disposed;
-		}
-		
-		@Override
-		public boolean equals(Object object) {
-			if (!(object instanceof NetworkString)) {
-				return false;
-			}
-			NetworkString that = (NetworkString) object;
-			return Objects.equals(this.disposed, that.disposed) && Objects.equals(this.message, that.message);
-		}
-		
-		@Override
-		public int hashCode() {
-			return Objects.hash(disposed, message);
-		}
 	}
 }
