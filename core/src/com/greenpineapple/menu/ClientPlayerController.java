@@ -24,6 +24,7 @@ public class ClientPlayerController {
 	}
 	
 	private void attemptNetworkConnection(ClientPlayerRow row) {
+		row.labelPlayerName.setText("Connecting...");
 		if (!NetworkTransmitter.addClient(row.textIPAddress.getText())) {
 			row.labelPlayerName.setText("Unable to connect to client at " + row.textIPAddress.getText());
 		} else {
