@@ -5,9 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.greenpineapple.map.Map;
 import com.greenpineapple.net.NetworkObjectDescription;
-
-import Map.MapClass;
 
 public class GPAPlayer {
 
@@ -20,7 +19,7 @@ public class GPAPlayer {
 	private Texture spritesheet;
 	private TextureRegion[][] spriteframes;
 	private Animation animationleft, animationright, animationup, animationdown, currentanimation;
-	private MapClass map;
+	private Map map;
 	private Rectangle playerrect;
 	
 	public GPAPlayer(PlayerType playertype) {
@@ -132,7 +131,7 @@ public class GPAPlayer {
 	}
 
 
-	public void setMap(MapClass map) {
+	public void setMap(Map map) {
 		this.map = map;
 	}
 }

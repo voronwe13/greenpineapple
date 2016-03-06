@@ -7,12 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.greenpineapple.GreenPineappleGame;
 import com.greenpineapple.game.GameScreen;
 import com.greenpineapple.player.Players;
 
 public class MainMenuController {
 
-	public MainMenuController(MainMenuScreen screen, Skin skin, Game game, String ipAddress) {
+	public MainMenuController(MainMenuScreen screen, Skin skin, GreenPineappleGame game, String ipAddress) {
 		Objects.requireNonNull(screen);
 		Objects.requireNonNull(skin);
 		Objects.requireNonNull(game);
@@ -35,7 +36,7 @@ public class MainMenuController {
 		});
 	}
 
-	private void createPlayButtonListener(MainMenuScreen screen, Game game) {
+	private void createPlayButtonListener(MainMenuScreen screen, GreenPineappleGame game) {
 		screen.buttonPlay.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

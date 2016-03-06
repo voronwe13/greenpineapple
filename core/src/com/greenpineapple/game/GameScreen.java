@@ -3,8 +3,6 @@ package com.greenpineapple.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import Map.MapClass;
-import Map.Treasure;
 import box2dLight.ConeLight;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
@@ -24,6 +22,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.greenpineapple.GreenPineappleGame;
 import com.greenpineapple.input.GPAInputProcessor;
+import com.greenpineapple.map.Map;
+import com.greenpineapple.map.Treasure;
 import com.greenpineapple.player.GPAPlayer;
 import com.greenpineapple.player.PlayerType;
 
@@ -41,13 +41,13 @@ public class GameScreen implements Screen {
 	private Texture mapimage;
 	private TextureRegion guardcurrentframe, robbercurrentframe;
 
-    MapClass map;
+    Map map;
 	private PointLight pointlight2;
 	private GPALighting lighting;
 	
-    public GameScreen(Game game) {
+    public GameScreen(GreenPineappleGame game) {
 		batch = new SpriteBatch();
-		map = new MapClass();
+		map = game.getMap();
 		List<Vector2> guardpositions = map.getGuardPositions();
 		List<Vector2> robberpositions = map.getRobberPositions();
 		List<Vector2> treasurepositions = map.getTreasurePositions();

@@ -40,7 +40,7 @@ public class MainMenuScreen implements Screen {
 	CheckBox checkGuards;
 	CheckBox checkThieves;
 
-	public MainMenuScreen(Game game) {
+	public MainMenuScreen(GreenPineappleGame game) {
 		String ipAddress = Local.getIPAddress();
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

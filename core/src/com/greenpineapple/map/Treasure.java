@@ -1,4 +1,4 @@
-package Map;
+package com.greenpineapple.map;
 
 import com.badlogic.gdx.math.Vector2;
 
