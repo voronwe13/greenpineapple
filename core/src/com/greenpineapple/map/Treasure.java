@@ -7,37 +7,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Treasure {
-	private static final int FRAME_COLS = 1;
-	private static final int FRAME_ROWS = 1;
+public abstract class Treasure {
+	
+	protected boolean captured;
 	
 	private Vector2 position;
-	private boolean captured;
+	protected Animation currentanimation;
+	protected Rectangle treasurerect;
 	
-	private Texture spritesheet;
-	private TextureRegion[][] spriteframes;
-	private Animation currentanimation;
-	private Rectangle treasurerect;
+	public static Treasure getTreasure(Vector2 position){
+		//TODO: return a random treasure type
+		return new PaintingTreasure(position);
+	}
 	
-	public Treasure(Vector2 position){
+	protected Treasure(Vector2 position){
 		this.position = position;
 		captured = false;
-		spritesheet = new Texture(Gdx.files.internal("loot.png"));
-		TextureRegion[][] tmp = TextureRegion.split(spritesheet, spritesheet.getWidth() / FRAME_COLS,
-				spritesheet.getHeight() / FRAME_ROWS); // #10
-		// int index = 0;
-		spriteframes = new TextureRegion[FRAME_ROWS][FRAME_COLS];
-		for (int i = 0; i < FRAME_ROWS; i++) {
-			for (int j = 0; j < FRAME_COLS; j++) {
-				spriteframes[i][j] = tmp[i][j];
-			}
-		}
-		treasurerect = new Rectangle();
-		treasurerect.width = spriteframes[0][0].getRegionWidth();
-		treasurerect.height = spriteframes[0][0].getRegionHeight();
-		treasurerect.setPosition(position);
-		currentanimation = new Animation(0.025f, spriteframes[0]);
-		
 	}
 	
 	public void capture(){
@@ -52,12 +37,7 @@ public class Treasure {
 		return captured;
 	}
 
-	public TextureRegion getCurrentFrame(float statetime) {
-		// TODO Auto-generated method stub
-		if(captured)
-			return null;
-		return currentanimation.getKeyFrame(statetime, true);
-	}
+	public abstract TextureRegion getCurrentFrame(float statetime);
 
 	public float getPositionX() {
 		// TODO Auto-generated method stub

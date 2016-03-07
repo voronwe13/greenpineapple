@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
 		List<Vector2> treasurepositions = map.getTreasurePositions();
 
 		for (Vector2 treasureposition : treasurepositions) {
-			Treasure treasure = new Treasure(treasureposition);
+			Treasure treasure = Treasure.getTreasure(treasureposition);
 			treasures.add(treasure);
 		}
 
