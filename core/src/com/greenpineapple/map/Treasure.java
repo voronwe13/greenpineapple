@@ -17,7 +17,7 @@ public abstract class Treasure {
 	
 	public static Treasure getTreasure(Vector2 position){
 		//TODO: return a random treasure type
-		return new PaintingTreasure(position);
+		return new GemTreasure(position);
 	}
 	
 	protected Treasure(Vector2 position){
